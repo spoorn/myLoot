@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "myloot",
+  "version": "${version}",
+  "name": "myLoot",
+  "description": "Instanced loot per player for world generated lootable chests",
+  "authors": [
+    "spoorn"
+  ],
+  "contact": {},
+  "license": "LGPL-3.0",
+  "icon": "assets/myloot/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "org.spoorn.myloot.client.MyLootClient"
+    ],
+    "main": [
+      "org.spoorn.myloot.MyLoot"
+    ]
+  },
+  "mixins": [
+    "myloot.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "fabric": "*",
+    "minecraft": "1.18.x"
+  }
+}
