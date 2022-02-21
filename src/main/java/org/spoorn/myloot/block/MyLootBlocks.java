@@ -3,8 +3,6 @@ package org.spoorn.myloot.block;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.spoorn.myloot.MyLoot;
 import org.spoorn.myloot.block.entity.MyLootChestBlockEntity;
 import org.spoorn.spoornpacks.api.Resource;
@@ -30,15 +28,5 @@ public class MyLootBlocks {
             throw new RuntimeException("Could not generate myLoot.loot_chest");
         }
         MY_LOOT_CHEST_BLOCK = resource.getBlock(BlockType.CHEST, "loot").get();
-    }
-
-    public static Block registerChest(String id) {
-        Block block = new MyLootChestBlock(FabricBlockSettings.copyOf(Blocks.CHEST));
-        return registerBlock(id, block);
-    }
-
-    private static Block registerBlock(String id, Block block) {
-        Identifier identifier = new Identifier(MyLoot.MODID, id);
-        return Registry.register(Registry.BLOCK, identifier, block);
     }
 }
