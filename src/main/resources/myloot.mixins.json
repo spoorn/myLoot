@@ -6,7 +6,9 @@
   "mixins": [
     "LootableContainerBlockEntityAccessor",
     "LootableContainerBlockEntityMixin",
-    "BlockEntityMixin"
+    "BlockEntityMixin",
+    "ChestBlockEntityMixin",
+    "ItemStackAccessor"
   ],
   "client": [
     "BlockEntityRendererFactoriesAccessor"

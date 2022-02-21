@@ -1,21 +1,27 @@
-package org.spoorn.myloot.inventory;
+package org.spoorn.myloot.block.entity;
 
+import lombok.ToString;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 
+@ToString
 public class MyLootInventory implements Inventory {
 
-    private DefaultedList<ItemStack> inventory;
+    private final DefaultedList<ItemStack> inventory;
+    // Back reference to the parent ChestBlockEntity.  This causes a circular loop, but gives us access to lots of
+    // necessary APIs.
+    private final MyLootChestBlockEntity parent;
     
-    public MyLootInventory() {
-        this(DefaultedList.ofSize(27, ItemStack.EMPTY));
+    public MyLootInventory(MyLootChestBlockEntity parent) {
+        this(DefaultedList.ofSize(27, ItemStack.EMPTY), parent);
     }
     
-    public MyLootInventory(DefaultedList<ItemStack> inventory) {
+    public MyLootInventory(DefaultedList<ItemStack> inventory, MyLootChestBlockEntity parent) {
         this.inventory = inventory;
+        this.parent = parent;
     }
     
     @Override
@@ -57,13 +63,23 @@ public class MyLootInventory implements Inventory {
     }
 
     @Override
-    public void markDirty() {
+    public void onOpen(PlayerEntity player) {
+        this.parent.onOpen(player);
+    }
 
+    @Override
+    public void onClose(PlayerEntity player) {
+        this.parent.onClose(player);
+    }
+
+    @Override
+    public void markDirty() {
+        this.parent.markDirty();
     }
 
     @Override
     public boolean canPlayerUse(PlayerEntity player) {
-        return false;
+        return this.parent.canPlayerUse(player);
     }
 
     @Override
