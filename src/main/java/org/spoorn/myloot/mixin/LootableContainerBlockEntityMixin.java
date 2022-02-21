@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spoorn.myloot.block.entity.MyLootChestBlockEntity;
+import org.spoorn.myloot.block.entity.AbstractMyLootContainerBlockEntity;
 import org.spoorn.myloot.core.LootableContainerReplacer;
 
 import java.util.Random;
@@ -28,7 +28,7 @@ public class LootableContainerBlockEntityMixin {
     private static void replaceLootableContainer(BlockView world, Random random, BlockPos pos, Identifier id, CallbackInfo ci) {
         BlockEntity be = world.getBlockEntity(pos);
         
-        if (id == null || be instanceof MyLootChestBlockEntity) {
+        if (id == null || be instanceof AbstractMyLootContainerBlockEntity) {
             return;
         }
         

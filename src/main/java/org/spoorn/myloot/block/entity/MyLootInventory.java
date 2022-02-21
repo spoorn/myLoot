@@ -13,13 +13,13 @@ public class MyLootInventory implements Inventory {
     private final DefaultedList<ItemStack> inventory;
     // Back reference to the parent ChestBlockEntity.  This causes a circular loop, but gives us access to lots of
     // necessary APIs.
-    private final MyLootChestBlockEntity parent;
+    private final AbstractMyLootContainerBlockEntity parent;
     
-    public MyLootInventory(MyLootChestBlockEntity parent) {
+    public MyLootInventory(AbstractMyLootContainerBlockEntity parent) {
         this(DefaultedList.ofSize(27, ItemStack.EMPTY), parent);
     }
     
-    public MyLootInventory(DefaultedList<ItemStack> inventory, MyLootChestBlockEntity parent) {
+    public MyLootInventory(DefaultedList<ItemStack> inventory, AbstractMyLootContainerBlockEntity parent) {
         this.inventory = inventory;
         this.parent = parent;
     }

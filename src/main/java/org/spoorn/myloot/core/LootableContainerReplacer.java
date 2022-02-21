@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.spoorn.myloot.block.MyLootBlocks;
-import org.spoorn.myloot.block.entity.MyLootChestBlockEntity;
+import org.spoorn.myloot.block.entity.AbstractMyLootContainerBlockEntity;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.ArrayDeque;
@@ -50,7 +50,7 @@ public class LootableContainerReplacer {
                 BlockPos pos = replacementInfo.pos;
                 BlockEntity oldBlockEntity = serverWorld.getBlockEntity(pos);
 
-                if (oldBlockEntity instanceof MyLootChestBlockEntity) {
+                if (oldBlockEntity instanceof AbstractMyLootContainerBlockEntity) {
                     continue;
                 }
 
@@ -58,11 +58,12 @@ public class LootableContainerReplacer {
                 if (replacementInfo.lootTableId != null && oldBlockEntity instanceof ChestBlockEntity && serverWorld.isChunkLoaded(pos)) {
                     serverWorld.removeBlockEntity(pos);
 
+                    // TODO: Handle different block types
                     serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, oldBlockState.get(ChestBlock.FACING)));
 
                     BlockEntity newBlockEntity = serverWorld.getBlockEntity(pos);
-                    if (newBlockEntity instanceof MyLootChestBlockEntity myLootChestBlockEntity) {
-                        myLootChestBlockEntity.setLootTable(replacementInfo.lootTableId, replacementInfo.lootTableSeed);
+                    if (newBlockEntity instanceof AbstractMyLootContainerBlockEntity myLootContainerBlockEntity) {
+                        myLootContainerBlockEntity.setLootTable(replacementInfo.lootTableId, replacementInfo.lootTableSeed);
                     }
                 }
             }
@@ -74,8 +75,8 @@ public class LootableContainerReplacer {
      */
     private static void registerInstancedLootDrop() {
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, entity) -> {
-            if (!world.isClient && (entity instanceof MyLootChestBlockEntity myLootChestBlockEntity)) {
-                Inventory instancedInventory = myLootChestBlockEntity.getPlayerInstancedInventory(player);
+            if (!world.isClient && (entity instanceof AbstractMyLootContainerBlockEntity myLootContainerBlockEntity)) {
+                Inventory instancedInventory = myLootContainerBlockEntity.getPlayerInstancedInventory(player);
                 if (instancedInventory == null) {
                     log.error("Got null inventory when checking instanced inventory for player={}, entity={}", player, entity);
                 } else {

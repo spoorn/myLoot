@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spoorn.myloot.block.entity.MyLootChestBlockEntity;
+import org.spoorn.myloot.block.entity.AbstractMyLootContainerBlockEntity;
 
 @Mixin(ChestBlock.class)
 public class ChestBlockMixin {
@@ -16,7 +16,7 @@ public class ChestBlockMixin {
     @Redirect(method = "onStateReplaced", at = @At(value = "INVOKE", 
             target = "Lnet/minecraft/util/ItemScatterer;spawn(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/inventory/Inventory;)V"))
     private void noSpawnForMyLoot(World world, BlockPos pos, Inventory inventory) {
-        if (!(inventory instanceof MyLootChestBlockEntity)) {
+        if (!(inventory instanceof AbstractMyLootContainerBlockEntity)) {
             ItemScatterer.spawn(world, pos, inventory);
         }
     }
