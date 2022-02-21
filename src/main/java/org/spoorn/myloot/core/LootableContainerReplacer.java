@@ -3,14 +3,15 @@ package org.spoorn.myloot.core;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spoorn.myloot.block.MyLootBlocks;
@@ -26,6 +27,7 @@ public class LootableContainerReplacer {
     
     public static void init() {
         registerTickCallback();
+        registerInstancedLootDrop();
     }
     
     private static void registerTickCallback() {
@@ -55,6 +57,22 @@ public class LootableContainerReplacer {
                         myLootChestBlockEntity.setLootTable(replacementInfo.lootTableId, replacementInfo.lootTableSeed);
                     }
                     //log.info("replaced chest with myLootChest");
+                }
+            }
+        });
+    }
+
+    /**
+     * Drop loot based on which player broke a myLoot container.
+     */
+    private static void registerInstancedLootDrop() {
+        PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, entity) -> {
+            if (!world.isClient && (entity instanceof MyLootChestBlockEntity myLootChestBlockEntity)) {
+                Inventory instancedInventory = myLootChestBlockEntity.getPlayerInstancedInventory(player);
+                if (instancedInventory == null) {
+                    log.error("Got null inventory when checking instanced inventory for player={}, entity={}", player, entity);
+                } else {
+                    ItemScatterer.spawn(world, pos, instancedInventory);
                 }
             }
         });

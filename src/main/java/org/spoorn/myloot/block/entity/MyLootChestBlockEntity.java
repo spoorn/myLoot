@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 import org.spoorn.myloot.entity.MyLootEntities;
 import org.spoorn.myloot.mixin.ItemStackAccessor;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -66,6 +67,11 @@ public class MyLootChestBlockEntity extends ChestBlockEntity {
     
     public MyLootChestBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(MyLootEntities.MY_LOOT_CHEST_BLOCK_ENTITY_BLOCK_ENTITY_TYPE, blockPos, blockState);
+    }
+    
+    @Nullable
+    public Inventory getPlayerInstancedInventory(PlayerEntity player) {
+        return this.inventories.get(player.getGameProfile().getId().toString());
     }
 
     // TODO: Change container name

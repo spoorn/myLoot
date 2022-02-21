@@ -8,7 +8,8 @@
     "LootableContainerBlockEntityMixin",
     "BlockEntityMixin",
     "ChestBlockEntityMixin",
-    "ItemStackAccessor"
+    "ItemStackAccessor",
+    "ChestBlockMixin"
   ],
   "client": [
     "BlockEntityRendererFactoriesAccessor"
