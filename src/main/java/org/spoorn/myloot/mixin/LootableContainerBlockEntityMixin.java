@@ -3,6 +3,7 @@ package org.spoorn.myloot.mixin;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
@@ -31,8 +32,8 @@ public class LootableContainerBlockEntityMixin {
             return;
         }
         
-        if (be instanceof ChestBlockEntity) {
-            LootableContainerReplacer.REPLACEMENT_INFOS.add(new LootableContainerReplacer.ReplacementInfo(pos, id, random.nextLong()));
+        if (be.getWorld() instanceof ServerWorld && be instanceof ChestBlockEntity) {
+            LootableContainerReplacer.REPLACEMENT_INFOS.add(new LootableContainerReplacer.ReplacementInfo(be.getWorld().getRegistryKey(), pos, id, random.nextLong()));
         }
     }
 }

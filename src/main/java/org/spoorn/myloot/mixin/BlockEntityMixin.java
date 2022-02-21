@@ -20,13 +20,15 @@ public abstract class BlockEntityMixin {
 
     @Shadow public abstract BlockPos getPos();
 
+    /**
+     * When BlockEntities are created, add them as a myLoot container if applicable.
+     */
     @Inject(method = "setWorld", at = @At(value = "TAIL"))
     private void replaceLootableContainer(World world, CallbackInfo ci) {
         if (this.world instanceof ServerWorld && ((Object) this) instanceof ChestBlockEntity) {
-            //System.out.println("### Added blockentity " + this);
             LootableContainerBlockEntityAccessor accessor = (LootableContainerBlockEntityAccessor) (Object) this;
             if (accessor.getLootTableId() != null) {
-                LootableContainerReplacer.REPLACEMENT_INFOS.add(new LootableContainerReplacer.ReplacementInfo(this.getPos(), accessor.getLootTableId(), accessor.getLootTableSeed()));
+                LootableContainerReplacer.REPLACEMENT_INFOS.add(new LootableContainerReplacer.ReplacementInfo(this.world.getRegistryKey(), this.getPos(), accessor.getLootTableId(), accessor.getLootTableSeed()));
             }
         }
     }
