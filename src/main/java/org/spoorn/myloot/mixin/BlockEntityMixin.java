@@ -25,7 +25,9 @@ public abstract class BlockEntityMixin {
         if (this.world instanceof ServerWorld && ((Object) this) instanceof ChestBlockEntity) {
             //System.out.println("### Added blockentity " + this);
             LootableContainerBlockEntityAccessor accessor = (LootableContainerBlockEntityAccessor) (Object) this;
-            LootableContainerReplacer.REPLACEMENT_INFOS.add(new LootableContainerReplacer.ReplacementInfo(this.getPos(), accessor.getLootTableId(), accessor.getLootTableSeed()));
+            if (accessor.getLootTableId() != null) {
+                LootableContainerReplacer.REPLACEMENT_INFOS.add(new LootableContainerReplacer.ReplacementInfo(this.getPos(), accessor.getLootTableId(), accessor.getLootTableSeed()));
+            }
         }
     }
 }

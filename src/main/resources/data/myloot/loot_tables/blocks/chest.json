@@ -13,7 +13,7 @@
               "source" : "block_entity"
             }
           ],
-          "name" : "myloot:chest"
+          "name" : "minecraft:chest"
         }
       ],
       "conditions" : [
