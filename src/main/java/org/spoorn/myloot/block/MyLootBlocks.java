@@ -16,7 +16,6 @@ public class MyLootBlocks {
     }
 
     public static Block registerChest(String id) {
-        // SPChestBlock has a reference to the block name, and actual identifier with _chest suffix
         Block block = new MyLootChestBlock(FabricBlockSettings.copyOf(Blocks.CHEST));
         return registerBlock(id, block);
     }

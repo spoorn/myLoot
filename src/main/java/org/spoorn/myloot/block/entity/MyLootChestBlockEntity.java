@@ -34,6 +34,8 @@ import java.util.Optional;
 
 public class MyLootChestBlockEntity extends ChestBlockEntity {
     
+    private static final String NBT_KEY = "myLoot";
+    
     private Map<String, MyLootInventory> inventories = new HashMap<>();
 
     public final ViewerCountManager stateManager = new ViewerCountManager(){
@@ -105,7 +107,7 @@ public class MyLootChestBlockEntity extends ChestBlockEntity {
         super.readNbt(nbt);
         this.inventories.clear();
         if (!this.deserializeLootTable(nbt)) {
-            NbtCompound root = nbt.getCompound("myLoot");
+            NbtCompound root = nbt.getCompound(NBT_KEY);
             for (String playerId : root.getKeys()) {
                 NbtCompound sub = root.getCompound(playerId);
                 MyLootInventory inventory = new MyLootInventory(this);
@@ -141,7 +143,7 @@ public class MyLootChestBlockEntity extends ChestBlockEntity {
                 sub.put("Items", nbtList);
                 root.put(entry.getKey(), sub);
             }
-            nbt.put("myLoot", root);
+            nbt.put(NBT_KEY, root);
         }
     }
 

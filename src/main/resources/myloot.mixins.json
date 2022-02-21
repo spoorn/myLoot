@@ -12,7 +12,8 @@
     "ChestBlockMixin"
   ],
   "client": [
-    "BlockEntityRendererFactoriesAccessor"
+    "BlockEntityRendererFactoriesAccessor",
+    "ClientPlayerInteractionManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
