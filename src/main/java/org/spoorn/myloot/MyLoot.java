@@ -5,6 +5,7 @@ import net.fabricmc.api.ModInitializer;
 import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.core.LootableContainerReplacer;
 import org.spoorn.myloot.entity.MyLootEntities;
+import org.spoorn.spoornpacks.client.render.SPTexturedRenderLayers;
 import org.spoorn.spoornpacks.core.generator.ResourceGenerator;
 import org.spoorn.spoornpacks.registry.SpoornPacksRegistry;
 
@@ -17,6 +18,9 @@ public class MyLoot implements ModInitializer {
     @Override
     public void onInitialize() {
         log.info("Hello from myLoot!");
+
+        // Custom TexteredRenderLayers
+        SPTexturedRenderLayers.registerChest(MODID, "loot_opened");
         
         // Blocks
         MyLootBlocks.init();

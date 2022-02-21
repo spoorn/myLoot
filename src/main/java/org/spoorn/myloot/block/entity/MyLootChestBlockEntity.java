@@ -1,5 +1,6 @@
 package org.spoorn.myloot.block.entity;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -11,7 +12,12 @@ import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.sound.SoundCategory;
@@ -27,16 +33,15 @@ import org.spoorn.myloot.entity.MyLootEntities;
 import org.spoorn.myloot.mixin.ItemStackAccessor;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 public class MyLootChestBlockEntity extends ChestBlockEntity {
     
     private static final String NBT_KEY = "myLoot";
     
     private Map<String, MyLootInventory> inventories = new HashMap<>();
+    private final Set<String> playersOpened = new HashSet<>();
 
     public final ViewerCountManager stateManager = new ViewerCountManager(){
 
@@ -69,6 +74,10 @@ public class MyLootChestBlockEntity extends ChestBlockEntity {
     
     public MyLootChestBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(MyLootEntities.MY_LOOT_CHEST_BLOCK_ENTITY_BLOCK_ENTITY_TYPE, blockPos, blockState);
+    }
+    
+    public boolean hasPlayerOpened(PlayerEntity player) {
+        return this.playersOpened.contains(player.getGameProfile().getId().toString());
     }
     
     @Nullable
@@ -105,12 +114,14 @@ public class MyLootChestBlockEntity extends ChestBlockEntity {
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
         this.inventories.clear();
+        this.playersOpened.clear();
         if (!this.deserializeLootTable(nbt)) {
             NbtCompound root = nbt.getCompound(NBT_KEY);
+            // Inventories
             for (String playerId : root.getKeys()) {
                 NbtCompound sub = root.getCompound(playerId);
                 MyLootInventory inventory = new MyLootInventory(this);
-                NbtList nbtList = sub.getList("Items", 10);
+                NbtList nbtList = sub.getList("Items", NbtElement.COMPOUND_TYPE);
                 for (int i = 0; i < nbtList.size(); ++i) {
                     NbtCompound nbtCompound = nbtList.getCompound(i);
                     int j = nbtCompound.getByte("Slot") & 0xFF;
@@ -118,6 +129,11 @@ public class MyLootChestBlockEntity extends ChestBlockEntity {
                     inventory.setStack(j, ItemStack.fromNbt(nbtCompound));
                 }
                 this.inventories.put(playerId, inventory);
+            }
+            // Players opened
+            NbtList playersOpened = root.getList("players", NbtElement.STRING_TYPE);
+            for (int i = 0; i < playersOpened.size(); ++i) {
+                this.playersOpened.add(playersOpened.getString(i));
             }
         }
     }
@@ -127,6 +143,7 @@ public class MyLootChestBlockEntity extends ChestBlockEntity {
         super.writeNbt(nbt);
         if (!this.serializeLootTable(nbt)) {
             NbtCompound root = new NbtCompound();
+            // Inventories
             for (Entry<String, MyLootInventory> entry : this.inventories.entrySet()) {
                 NbtCompound sub = new NbtCompound();
                 NbtList nbtList = new NbtList();
@@ -142,15 +159,45 @@ public class MyLootChestBlockEntity extends ChestBlockEntity {
                 sub.put("Items", nbtList);
                 root.put(entry.getKey(), sub);
             }
+            // Players opened
+            NbtList playersOpenedList = new NbtList();
+            for (String player : this.playersOpened) {
+                playersOpenedList.add(NbtString.of(player));
+            }
+            root.put("players", playersOpenedList);
             nbt.put(NBT_KEY, root);
         }
     }
 
     @Override
     public void onOpen(PlayerEntity player) {
-        if (!this.removed && !player.isSpectator()) {
-            this.stateManager.openContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
+        if (!this.removed) {
+            if (!player.isSpectator()) {
+                this.stateManager.openContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
+            }
+        
+            String playerId = player.getGameProfile().getId().toString();
+            if (!this.playersOpened.contains(playerId)) {
+                this.playersOpened.add(playerId);
+                this.markDirty();
+                if (this.world != null) {
+                    // Force sync with clients
+                    this.world.updateListeners(this.getPos(), this.getCachedState(), this.getCachedState(), Block.NOTIFY_ALL);
+                }
+            }
         }
+    }
+
+    // Allow syncing to client
+    @Nullable
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
+
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        return createNbt();
     }
 
     @Override
