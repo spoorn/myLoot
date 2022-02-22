@@ -30,7 +30,7 @@ public class LootableContainerBlockEntityMixin {
     private static void replaceLootableContainer(BlockView world, Random random, BlockPos pos, Identifier id, CallbackInfo ci) {
         BlockEntity be = world.getBlockEntity(pos);
         
-        if (id == null || be instanceof MyLootContainerBlockEntity) {
+        if (id == null || be == null || be instanceof MyLootContainerBlockEntity) {
             return;
         }
         

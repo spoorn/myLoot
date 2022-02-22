@@ -61,8 +61,7 @@ public class LootableContainerReplacer {
                 BlockState oldBlockState = serverWorld.getBlockState(pos);
                 if (replacementInfo.lootTableId != null && MyLootUtil.supportedBlockEntity(oldBlockEntity) && serverWorld.isChunkLoaded(pos)) {
                     serverWorld.removeBlockEntity(pos);
-
-                    // TODO: Handle different block types
+                    
                     if (oldBlockState.getBlock() instanceof ChestBlock) {
                         serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, oldBlockState.get(ChestBlock.FACING)));
                     } else if (oldBlockState.getBlock() instanceof BarrelBlock) {
