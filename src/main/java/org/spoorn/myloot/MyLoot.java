@@ -18,9 +18,6 @@ public class MyLoot implements ModInitializer {
     @Override
     public void onInitialize() {
         log.info("Hello from myLoot!");
-
-        // Custom TexteredRenderLayers
-        SPTexturedRenderLayers.registerChest(MODID, "loot_opened");
         
         // Blocks
         MyLootBlocks.init();
