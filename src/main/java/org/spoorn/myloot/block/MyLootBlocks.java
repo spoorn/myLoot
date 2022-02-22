@@ -27,7 +27,7 @@ public class MyLootBlocks {
                 .addCustomResourceProvider("loot_chest", ResourceType.BLOCK_LOOT_TABLE,
                         ResourceGenerator.newBlockLootTableBuilder(MyLoot.MODID, "loot", BlockType.CHEST).chest("minecraft:chest"))
                 .addCustomResourceProvider("loot_barrel", ResourceType.BLOCK_LOOT_TABLE,
-                    ResourceGenerator.newBlockLootTableBuilder(MyLoot.MODID, "loot", BlockType.CHEST).barrel("minecraft:chest"));
+                        ResourceGenerator.newBlockLootTableBuilder(MyLoot.MODID, "loot", BlockType.BARREL).barrel("minecraft:barrel"));
         Resource resource = MyLoot.RESOURCE_GENERATOR.generate(rb);
         if (resource.getBlock(BlockType.CHEST, "loot").isEmpty()) {
             throw new RuntimeException("Could not generate myLoot.loot_chest");

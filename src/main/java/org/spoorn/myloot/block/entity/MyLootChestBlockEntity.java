@@ -77,7 +77,7 @@ public class MyLootChestBlockEntity extends ChestBlockEntity implements MyLootCo
 
     @Nullable
     public Inventory getPlayerInstancedInventory(PlayerEntity player) {
-        return this.getPlayerInstancedInventory(player);
+        return this.common.getPlayerInstancedInventory(player);
     }
 
     @Override

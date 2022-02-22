@@ -79,7 +79,7 @@ public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLoot
 
     @Nullable
     public Inventory getPlayerInstancedInventory(PlayerEntity player) {
-        return this.getPlayerInstancedInventory(player);
+        return this.common.getPlayerInstancedInventory(player);
     }
 
     @Override
