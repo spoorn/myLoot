@@ -82,11 +82,6 @@ public class MyLootChestBlockEntity extends ChestBlockEntity implements MyLootCo
     }
 
     @Override
-    public void setLootTable(Identifier id, long seed) {
-        super.setLootTable(id, seed);
-    }
-
-    @Override
     protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
         return this.common.createScreenHandler(syncId, playerInventory, this.getInvStackList(), this);
     }
@@ -161,5 +156,25 @@ public class MyLootChestBlockEntity extends ChestBlockEntity implements MyLootCo
             f += (double)direction.getOffsetZ() * 0.5;
         }
         world.playSound(null, d, e, f, soundEvent, SoundCategory.BLOCKS, 0.5f, world.random.nextFloat() * 0.1f + 0.9f);
+    }
+
+    /*
+       The following methods just invoke the super method, but are required as a multiplayer server will complain at
+       runtime that these methods which are part of the MyLootContainerBlockEntity interface aren't implemented.
+       Not sure why inheriting superclass methods do not count for interface implementations, but this gets around it.
+    */
+    @Override
+    public void setLootTable(Identifier id, long seed) {
+        super.setLootTable(id, seed);
+    }
+
+    @Override
+    public void markDirty() {
+        super.markDirty();
+    }
+
+    @Override
+    public boolean canPlayerUse(PlayerEntity player) {
+        return super.canPlayerUse(player);
     }
 }

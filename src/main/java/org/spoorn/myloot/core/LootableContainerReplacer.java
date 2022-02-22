@@ -85,7 +85,7 @@ public class LootableContainerReplacer {
             if (!world.isClient && (entity instanceof MyLootContainerBlockEntity myLootContainerBlockEntity)) {
                 Inventory instancedInventory = myLootContainerBlockEntity.getPlayerInstancedInventory(player);
                 if (instancedInventory == null) {
-                    log.error("Got null inventory when checking instanced inventory for player={}, entity={}", player, entity);
+                    //log.error("Got null inventory when checking instanced inventory for player={}, entity={}", player, entity);
                 } else {
                     ItemScatterer.spawn(world, pos, instancedInventory);
                 }
