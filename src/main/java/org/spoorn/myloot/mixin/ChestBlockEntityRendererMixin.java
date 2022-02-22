@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spoorn.myloot.MyLoot;
-import org.spoorn.myloot.block.entity.AbstractMyLootContainerBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
 import org.spoorn.spoornpacks.client.render.SPTexturedRenderLayers;
 
 @Mixin(ChestBlockEntityRenderer.class)
@@ -24,7 +24,7 @@ public class ChestBlockEntityRendererMixin {
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TexturedRenderLayers;getChestTexture(Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/block/enums/ChestType;Z)Lnet/minecraft/client/util/SpriteIdentifier;"))
     private SpriteIdentifier overrideTextureWithOpened(BlockEntity blockEntity, ChestType type, boolean christmas) {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (player != null && blockEntity instanceof AbstractMyLootContainerBlockEntity myLootContainerBlockEntity) {
+        if (player != null && blockEntity instanceof MyLootContainerBlockEntity myLootContainerBlockEntity) {
             if (myLootContainerBlockEntity.hasPlayerOpened(player)) {
                 return SPTexturedRenderLayers.getChest(MyLoot.MODID, "loot_opened", type);
             }

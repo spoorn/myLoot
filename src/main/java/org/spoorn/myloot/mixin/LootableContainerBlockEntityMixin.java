@@ -1,5 +1,6 @@
 package org.spoorn.myloot.mixin;
 
+import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
@@ -11,8 +12,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spoorn.myloot.block.entity.AbstractMyLootContainerBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
 import org.spoorn.myloot.core.LootableContainerReplacer;
+import org.spoorn.myloot.util.MyLootUtil;
 
 import java.util.Random;
 
@@ -28,11 +30,11 @@ public class LootableContainerBlockEntityMixin {
     private static void replaceLootableContainer(BlockView world, Random random, BlockPos pos, Identifier id, CallbackInfo ci) {
         BlockEntity be = world.getBlockEntity(pos);
         
-        if (id == null || be instanceof AbstractMyLootContainerBlockEntity) {
+        if (id == null || be instanceof MyLootContainerBlockEntity) {
             return;
         }
         
-        if (be.getWorld() instanceof ServerWorld && be instanceof ChestBlockEntity) {
+        if (be.getWorld() instanceof ServerWorld && MyLootUtil.supportedBlockEntity(be)) {
             LootableContainerReplacer.REPLACEMENT_INFOS.add(new LootableContainerReplacer.ReplacementInfo(be.getWorld().getRegistryKey(), pos, id, random.nextLong()));
         }
     }

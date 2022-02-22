@@ -1,5 +1,6 @@
 {
   "myloot.breakcontainer.actionbarwarning" : "Hold Sneak to break",
   "myloot.breakcontainer.chatwarning" : "Breaking this means other players won't be able to loot it.  If you still want to break it, hold Sneak while breaking",
-  "myloot.loot_chest.container.name" : "myLoot Chest"
+  "myloot.loot_chest.container.name" : "myLoot Chest",
+  "myloot.loot_barrel.container.name" : "myLoot Barrel"
 }

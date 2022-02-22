@@ -1,5 +1,6 @@
 package org.spoorn.myloot.mixin;
 
+import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -12,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spoorn.myloot.core.LootableContainerReplacer;
+import org.spoorn.myloot.util.MyLootUtil;
 
 @Mixin(BlockEntity.class)
 public abstract class BlockEntityMixin {
@@ -25,7 +27,7 @@ public abstract class BlockEntityMixin {
      */
     @Inject(method = "setWorld", at = @At(value = "TAIL"))
     private void replaceLootableContainer(World world, CallbackInfo ci) {
-        if (this.world instanceof ServerWorld && ((Object) this) instanceof ChestBlockEntity) {
+        if (this.world instanceof ServerWorld && MyLootUtil.supportedBlockEntity((Object) this)) {
             LootableContainerBlockEntityAccessor accessor = (LootableContainerBlockEntityAccessor) (Object) this;
             if (accessor.getLootTableId() != null) {
                 LootableContainerReplacer.REPLACEMENT_INFOS.add(new LootableContainerReplacer.ReplacementInfo(this.world.getRegistryKey(), this.getPos(), accessor.getLootTableId(), accessor.getLootTableSeed()));

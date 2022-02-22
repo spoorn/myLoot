@@ -4,19 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.block.BarrelBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
+import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.spoorn.myloot.block.MyLootBlocks;
-import org.spoorn.myloot.block.entity.AbstractMyLootContainerBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
+import org.spoorn.myloot.util.MyLootUtil;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.ArrayDeque;
@@ -50,19 +54,23 @@ public class LootableContainerReplacer {
                 BlockPos pos = replacementInfo.pos;
                 BlockEntity oldBlockEntity = serverWorld.getBlockEntity(pos);
 
-                if (oldBlockEntity instanceof AbstractMyLootContainerBlockEntity) {
+                if (oldBlockEntity instanceof MyLootContainerBlockEntity) {
                     continue;
                 }
 
                 BlockState oldBlockState = serverWorld.getBlockState(pos);
-                if (replacementInfo.lootTableId != null && oldBlockEntity instanceof ChestBlockEntity && serverWorld.isChunkLoaded(pos)) {
+                if (replacementInfo.lootTableId != null && MyLootUtil.supportedBlockEntity(oldBlockEntity) && serverWorld.isChunkLoaded(pos)) {
                     serverWorld.removeBlockEntity(pos);
 
                     // TODO: Handle different block types
-                    serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, oldBlockState.get(ChestBlock.FACING)));
+                    if (oldBlockState.getBlock() instanceof ChestBlock) {
+                        serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, oldBlockState.get(ChestBlock.FACING)));
+                    } else if (oldBlockState.getBlock() instanceof BarrelBlock) {
+                        serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_BARREL_BLOCK.getDefaultState().with(Properties.FACING, oldBlockState.get(Properties.FACING)));
+                    }
 
                     BlockEntity newBlockEntity = serverWorld.getBlockEntity(pos);
-                    if (newBlockEntity instanceof AbstractMyLootContainerBlockEntity myLootContainerBlockEntity) {
+                    if (newBlockEntity instanceof MyLootContainerBlockEntity myLootContainerBlockEntity) {
                         myLootContainerBlockEntity.setLootTable(replacementInfo.lootTableId, replacementInfo.lootTableSeed);
                     }
                 }
@@ -75,7 +83,7 @@ public class LootableContainerReplacer {
      */
     private static void registerInstancedLootDrop() {
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, entity) -> {
-            if (!world.isClient && (entity instanceof AbstractMyLootContainerBlockEntity myLootContainerBlockEntity)) {
+            if (!world.isClient && (entity instanceof MyLootContainerBlockEntity myLootContainerBlockEntity)) {
                 Inventory instancedInventory = myLootContainerBlockEntity.getPlayerInstancedInventory(player);
                 if (instancedInventory == null) {
                     log.error("Got null inventory when checking instanced inventory for player={}, entity={}", player, entity);

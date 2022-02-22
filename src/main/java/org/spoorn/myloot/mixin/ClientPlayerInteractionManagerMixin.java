@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spoorn.myloot.block.entity.AbstractMyLootContainerBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public abstract class ClientPlayerInteractionManagerMixin {
@@ -42,7 +42,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
     private void preventBreakingMyLootContainer(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
         if (!this.gameMode.isCreative()) {
             BlockEntity blockEntity = this.client.world.getBlockEntity(pos);
-            if (blockEntity instanceof AbstractMyLootContainerBlockEntity && !this.client.player.isSneaking()) {
+            if (blockEntity instanceof MyLootContainerBlockEntity && !this.client.player.isSneaking()) {
                 this.client.player.sendMessage(ACTIONBAR_BREAK_WARNING, true);
                 if (!warned) {
                     this.client.player.sendMessage(CHAT_BREAK_WARNING, false);

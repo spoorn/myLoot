@@ -10,7 +10,7 @@ import org.spoorn.myloot.entity.MyLootEntities;
 public class MyLootChestBlock extends ChestBlock {
     
     public MyLootChestBlock(Settings settings) {
-        super(settings, () -> MyLootEntities.MY_LOOT_CHEST_BLOCK_ENTITY_BLOCK_ENTITY_TYPE);
+        super(settings, () -> MyLootEntities.MY_LOOT_CHEST_BLOCK_ENTITY_TYPE);
     }
 
     @Override

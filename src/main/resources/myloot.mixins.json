@@ -9,7 +9,9 @@
     "BlockEntityMixin",
     "ChestBlockEntityMixin",
     "ItemStackAccessor",
-    "ChestBlockMixin"
+    "ChestBlockMixin",
+    "BarrelBlockMixin",
+    "BlockEntityAccessor"
   ],
   "client": [
     "ClientPlayerInteractionManagerMixin",
