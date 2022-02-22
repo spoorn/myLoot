@@ -20,6 +20,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -78,6 +79,11 @@ public class MyLootChestBlockEntity extends ChestBlockEntity implements MyLootCo
     @Nullable
     public Inventory getPlayerInstancedInventory(PlayerEntity player) {
         return this.common.getPlayerInstancedInventory(player);
+    }
+
+    @Override
+    public void setLootTable(Identifier id, long seed) {
+        super.setLootTable(id, seed);
     }
 
     @Override
