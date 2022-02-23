@@ -23,7 +23,6 @@ import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
 import org.spoorn.myloot.block.entity.MyLootInventory;
 import org.spoorn.myloot.mixin.ItemStackAccessor;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class MyLootContainerBlockEntityCommon {
@@ -45,14 +44,14 @@ public class MyLootContainerBlockEntityCommon {
         return this.playersOpened.contains(player.getGameProfile().getId().toString());
     }
 
-    @Nullable
-    public Inventory getPlayerInstancedInventory(PlayerEntity player) {
-        return this.inventories.get(player.getGameProfile().getId().toString());
-    }
-
     public ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory, 
                                                 DefaultedList<ItemStack> defaultList, MyLootContainerBlockEntity myLootContainerBlockEntity) {
         PlayerEntity player = playerInventory.player;
+        Inventory inventory = getOrCreateNewInstancedInventoryIfAbsent(player, defaultList, myLootContainerBlockEntity);
+        return GenericContainerScreenHandler.createGeneric9x3(syncId, playerInventory, inventory);
+    }
+    
+    public Inventory getOrCreateNewInstancedInventoryIfAbsent(PlayerEntity player, DefaultedList<ItemStack> defaultList, MyLootContainerBlockEntity myLootContainerBlockEntity) {
         String playerId = player.getGameProfile().getId().toString();
         MyLootInventory myLootInventory;
         if (!this.inventories.containsKey(playerId)) {
@@ -66,7 +65,7 @@ public class MyLootContainerBlockEntityCommon {
         } else {
             myLootInventory = this.inventories.get(playerId);
         }
-        return GenericContainerScreenHandler.createGeneric9x3(syncId, playerInventory, myLootInventory);
+        return myLootInventory;
     }
 
     public void readNbt(NbtCompound nbt, MyLootContainerBlockEntity myLootContainerBlockEntity) {

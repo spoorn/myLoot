@@ -17,7 +17,7 @@ public class MyLootClient implements ClientModInitializer {
         log.info("Hello client from myLoot!");
 
         // Custom TexteredRenderLayers
-        SPTexturedRenderLayers.registerChest(MyLoot.MODID, "loot_opened");
+        SPTexturedRenderLayers.registerChest(MyLoot.MODID, "opened_loot");
         
         // Barrel custom model
         MyLootModelResourceProvider.init();

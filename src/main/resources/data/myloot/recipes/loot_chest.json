@@ -1,0 +1,19 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "###",
+    "#W#",
+    "###"
+  ],
+  "key" : {
+    "#" : {
+      "item" : "minecraft:enchanted_golden_apple"
+    },
+    "W" : {
+      "item" : "minecraft:chest"
+    }
+  },
+  "result" : {
+    "item" : "myloot:loot_chest"
+  }
+}

@@ -26,7 +26,7 @@ public class ChestBlockEntityRendererMixin {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null && blockEntity instanceof MyLootContainerBlockEntity myLootContainerBlockEntity) {
             if (myLootContainerBlockEntity.hasPlayerOpened(player)) {
-                return SPTexturedRenderLayers.getChest(MyLoot.MODID, "loot_opened", type);
+                return SPTexturedRenderLayers.getChest(MyLoot.MODID, "opened_loot", type);
             }
         }
         return TexturedRenderLayers.getChestTexture(blockEntity, type, christmas);
