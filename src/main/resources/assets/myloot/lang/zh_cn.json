@@ -1,0 +1,10 @@
+{
+  "myloot.breakcontainer.actionbarwarning" : "潜行以破坏",
+  "myloot.breakcontainer.chatwarning" : "破坏该战利品箱后，其它玩家将无法获取其中的战利品。如果你执意为之，请在破坏时按下潜行键。",
+  "myloot.loot_chest.container.name" : "myLoot箱子",
+  "myloot.container.doubleChest" : "myLoot大型箱子",
+  "myloot.loot_barrel.container.name" : "myLoot木桶",
+  "block.myloot.loot_barrel": "myLoot木桶",
+  "block.myloot.loot_chest": "myLoot箱子",
+  "itemGroup.myloot.general" : "myLoot"
+}
