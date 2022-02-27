@@ -2,6 +2,7 @@ package org.spoorn.myloot.util;
 
 import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -9,14 +10,36 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
+import org.spoorn.myloot.config.ModConfig;
 
 import java.util.*;
 import java.util.Map.Entry;
 
 public final class MyLootUtil {
     
+    public static final String PLAYER_INSTANCE_DROP_BEHAVIOR = "PLAYER_INSTANCE";
+    public static final String ALL_DROP_BEHAVIOR = "ALL";
+    
     public static boolean supportedBlockEntity(Object be) {
         return (be instanceof ChestBlockEntity) || (be instanceof BarrelBlockEntity);
+    }
+    
+    public static void dropMyLoot(World world, BlockPos pos, Inventory inventory) {
+        if (inventory instanceof MyLootContainerBlockEntity myLootContainerBlockEntity) {
+            String dropBehavior = ModConfig.get().dropBehavior;
+            if (ALL_DROP_BEHAVIOR.equals(dropBehavior)) {
+                for (Inventory inv : myLootContainerBlockEntity.getAllInstancedInventories()) {
+                    ItemScatterer.spawn(world, pos, inv);
+                }
+            } else if (PLAYER_INSTANCE_DROP_BEHAVIOR.equals(dropBehavior)) {
+                scatterDifferences(world, pos, myLootContainerBlockEntity.getDefaultLoot(), myLootContainerBlockEntity.getOriginalInventory());
+            } else {
+                throw new RuntimeException("dropBehavior=" + dropBehavior + " is not supported for " + myLootContainerBlockEntity);
+            }
+        } else {
+            ItemScatterer.spawn(world, pos, inventory);
+        }
     }
     
     public static DefaultedList<ItemStack> deepCloneInventory(DefaultedList<ItemStack> original) {

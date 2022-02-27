@@ -30,6 +30,8 @@ import org.spoorn.myloot.block.entity.common.MyLootContainerBlockEntityCommon;
 import org.spoorn.myloot.entity.MyLootEntities;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class MyLootChestBlockEntity extends ChestBlockEntity implements MyLootContainerBlockEntity {
@@ -91,6 +93,11 @@ public class MyLootChestBlockEntity extends ChestBlockEntity implements MyLootCo
     @Override
     public DefaultedList<ItemStack> getDefaultLoot() {
         return this.common.getDefaultLoot();
+    }
+
+    @Override
+    public List<Inventory> getAllInstancedInventories() {
+        return new ArrayList<>(this.common.getInventories().values());
     }
 
     @Override

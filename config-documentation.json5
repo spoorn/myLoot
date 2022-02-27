@@ -1,0 +1,7 @@
+{
+  /* Controls behavior of dropped loot when a myLoot container is broken.  [default = PLAYER_INSTANCE]
+         - "PLAYER_INSTANCE" to drop player's instanced loot of player who broke the container.
+         - "ALL" to drop all instanced loot for all players.
+  */
+  "dropBehavior": "PLAYER_INSTANCE"
+}

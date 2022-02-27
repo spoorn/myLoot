@@ -8,6 +8,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public interface MyLootContainerBlockEntity {
 
@@ -36,4 +37,6 @@ public interface MyLootContainerBlockEntity {
 
     @Nullable
     Inventory getPlayerInstancedInventory(PlayerEntity player);
+    
+    List<Inventory> getAllInstancedInventories();
 }

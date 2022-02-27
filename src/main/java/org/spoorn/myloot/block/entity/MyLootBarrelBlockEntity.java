@@ -31,6 +31,8 @@ import org.spoorn.myloot.entity.MyLootEntities;
 import org.spoorn.myloot.mixin.BlockEntityAccessor;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLootContainerBlockEntity {
 
@@ -83,6 +85,11 @@ public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLoot
     @Nullable
     public Inventory getPlayerInstancedInventory(PlayerEntity player) {
         return this.common.getOrCreateNewInstancedInventoryIfAbsent(player, this.getDefaultLoot(), this);
+    }
+
+    @Override
+    public List<Inventory> getAllInstancedInventories() {
+        return new ArrayList<>(this.common.getInventories().values());
     }
 
     @Override

@@ -7,9 +7,7 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.BarrelBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
-import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
@@ -20,6 +18,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
+import org.spoorn.myloot.config.ModConfig;
 import org.spoorn.myloot.util.MyLootUtil;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -86,7 +85,7 @@ public class LootableContainerReplacer {
                 Inventory instancedInventory = myLootContainerBlockEntity.getPlayerInstancedInventory(player);
                 if (instancedInventory == null) {
                     //log.error("Got null inventory when checking instanced inventory for player={}, entity={}", player, entity);
-                } else {
+                } else if (MyLootUtil.PLAYER_INSTANCE_DROP_BEHAVIOR.equals(ModConfig.get().dropBehavior)) {
                     ItemScatterer.spawn(world, pos, instancedInventory);
                 }
             }
