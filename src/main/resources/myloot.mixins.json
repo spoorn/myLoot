@@ -8,10 +8,10 @@
     "LootableContainerBlockEntityMixin",
     "BlockEntityMixin",
     "ChestBlockEntityMixin",
-    "ItemStackAccessor",
     "ChestBlockMixin",
     "BarrelBlockMixin",
-    "BlockEntityAccessor"
+    "BlockEntityAccessor",
+    "LootTableMixin"
   ],
   "client": [
     "ClientPlayerInteractionManagerMixin",

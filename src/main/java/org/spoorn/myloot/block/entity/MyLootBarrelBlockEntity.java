@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -21,17 +22,20 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.spoorn.myloot.block.entity.common.MyLootContainerBlockEntityCommon;
 import org.spoorn.myloot.entity.MyLootEntities;
 import org.spoorn.myloot.mixin.BlockEntityAccessor;
+import org.spoorn.myloot.util.MyLootUtil;
 
 import javax.annotation.Nullable;
 
 public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLootContainerBlockEntity {
 
+    private DefaultedList<ItemStack> defaultInventory = DefaultedList.ofSize(27, ItemStack.EMPTY);
     public final ViewerCountManager stateManager = new ViewerCountManager(){
 
         @Override
@@ -80,12 +84,17 @@ public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLoot
 
     @Nullable
     public Inventory getPlayerInstancedInventory(PlayerEntity player) {
-        return this.common.getOrCreateNewInstancedInventoryIfAbsent(player, this.getInvStackList(), this);
+        return this.common.getOrCreateNewInstancedInventoryIfAbsent(player, this.defaultInventory, this);
+    }
+
+    @Override
+    public void setDefaultLoot() {
+        this.defaultInventory = MyLootUtil.deepCloneInventory(super.getInvStackList());
     }
 
     @Override
     protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
-        return this.common.createScreenHandler(syncId, playerInventory, this.getInvStackList(), this);
+        return this.common.createScreenHandler(syncId, playerInventory, this.defaultInventory, this);
     }
 
     @Override

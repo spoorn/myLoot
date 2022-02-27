@@ -12,6 +12,11 @@ public interface MyLootContainerBlockEntity {
     Text getContainerName();
 
     void setLootTable(Identifier id, long seed);
+
+    /**
+     * This should be called when various container entities are first supplied with generated loot.
+     */
+    void setDefaultLoot();
     
     void onOpen(PlayerEntity player);
 

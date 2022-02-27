@@ -21,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
 import org.spoorn.myloot.block.entity.MyLootInventory;
-import org.spoorn.myloot.mixin.ItemStackAccessor;
+import org.spoorn.myloot.util.MyLootUtil;
 
 import java.util.*;
 
@@ -55,11 +55,7 @@ public class MyLootContainerBlockEntityCommon {
         String playerId = player.getGameProfile().getId().toString();
         MyLootInventory myLootInventory;
         if (!this.inventories.containsKey(playerId)) {
-            DefaultedList<ItemStack> clonedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
-            for (int i = 0; i < defaultList.size(); ++i) {
-                ItemStack defaultItemStack = defaultList.get(i);
-                clonedList.set(i, ItemStackAccessor.create(defaultItemStack.getItem(), defaultItemStack.getCount(), Optional.ofNullable(defaultItemStack.getNbt())));
-            }
+            DefaultedList<ItemStack> clonedList = MyLootUtil.deepCloneInventory(defaultList);
             myLootInventory = new MyLootInventory(clonedList, myLootContainerBlockEntity);
             this.inventories.put(playerId, myLootInventory);
         } else {
