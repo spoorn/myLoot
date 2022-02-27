@@ -29,13 +29,11 @@ import net.minecraft.world.World;
 import org.spoorn.myloot.block.entity.common.MyLootContainerBlockEntityCommon;
 import org.spoorn.myloot.entity.MyLootEntities;
 import org.spoorn.myloot.mixin.BlockEntityAccessor;
-import org.spoorn.myloot.util.MyLootUtil;
 
 import javax.annotation.Nullable;
 
 public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLootContainerBlockEntity {
 
-    private DefaultedList<ItemStack> defaultInventory = DefaultedList.ofSize(27, ItemStack.EMPTY);
     public final ViewerCountManager stateManager = new ViewerCountManager(){
 
         @Override
@@ -84,17 +82,27 @@ public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLoot
 
     @Nullable
     public Inventory getPlayerInstancedInventory(PlayerEntity player) {
-        return this.common.getOrCreateNewInstancedInventoryIfAbsent(player, this.defaultInventory, this);
+        return this.common.getOrCreateNewInstancedInventoryIfAbsent(player, this.getDefaultLoot(), this);
+    }
+
+    @Override
+    public DefaultedList<ItemStack> getOriginalInventory() {
+        return super.getInvStackList();
+    }
+
+    @Override
+    public DefaultedList<ItemStack> getDefaultLoot() {
+        return this.common.getDefaultLoot();
     }
 
     @Override
     public void setDefaultLoot() {
-        this.defaultInventory = MyLootUtil.deepCloneInventory(super.getInvStackList());
+        this.common.setDefaultLoot(super.getInvStackList());
     }
 
     @Override
     protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
-        return this.common.createScreenHandler(syncId, playerInventory, this.defaultInventory, this);
+        return this.common.createScreenHandler(syncId, playerInventory, this.getDefaultLoot(), this);
     }
 
     @Override

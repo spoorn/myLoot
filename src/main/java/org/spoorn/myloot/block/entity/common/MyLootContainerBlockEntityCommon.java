@@ -32,6 +32,7 @@ public class MyLootContainerBlockEntityCommon {
     @Getter
     @Setter
     private Map<String, MyLootInventory> inventories = new HashMap<>();
+    private DefaultedList<ItemStack> defaultLoot = DefaultedList.ofSize(27, ItemStack.EMPTY);
     private final Set<String> playersOpened = new HashSet<>();
     
     private final ViewerCountManager stateManager;
@@ -42,6 +43,14 @@ public class MyLootContainerBlockEntityCommon {
 
     public boolean hasPlayerOpened(PlayerEntity player) {
         return this.playersOpened.contains(player.getGameProfile().getId().toString());
+    }
+
+    public DefaultedList<ItemStack> getDefaultLoot() {
+        return this.defaultLoot;
+    }
+
+    public void setDefaultLoot(DefaultedList<ItemStack> originalInventory) {
+        this.defaultLoot = MyLootUtil.deepCloneInventory(originalInventory);
     }
 
     public ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory, 
@@ -67,6 +76,7 @@ public class MyLootContainerBlockEntityCommon {
     public void readNbt(NbtCompound nbt, MyLootContainerBlockEntity myLootContainerBlockEntity) {
         this.inventories.clear();
         this.playersOpened.clear();
+        this.defaultLoot.clear();
         NbtCompound root = nbt.getCompound(NBT_KEY);
         // Inventories
         for (String playerId : root.getKeys()) {
@@ -85,6 +95,14 @@ public class MyLootContainerBlockEntityCommon {
         NbtList playersOpened = root.getList("players", NbtElement.STRING_TYPE);
         for (int i = 0; i < playersOpened.size(); ++i) {
             this.playersOpened.add(playersOpened.getString(i));
+        }
+        // Default loot
+        NbtList nbtList = root.getList("defaultLoot", NbtElement.COMPOUND_TYPE);
+        for (int i = 0; i < nbtList.size(); ++i) {
+            NbtCompound nbtCompound = nbtList.getCompound(i);
+            int j = nbtCompound.getByte("Slot") & 0xFF;
+            if (j < 0 || j >= this.defaultLoot.size()) continue;
+            this.defaultLoot.set(j, ItemStack.fromNbt(nbtCompound));
         }
     }
 
@@ -112,6 +130,18 @@ public class MyLootContainerBlockEntityCommon {
             playersOpenedList.add(NbtString.of(player));
         }
         root.put("players", playersOpenedList);
+        // Default loot
+        NbtList defaultLoot = new NbtList();
+        for (int i = 0; i < this.defaultLoot.size(); ++i) {
+            ItemStack stack = this.defaultLoot.get(i);
+            if (stack.isEmpty()) continue;
+            NbtCompound nbtCompound = new NbtCompound();
+            nbtCompound.putByte("Slot", (byte)i);
+            stack.writeNbt(nbtCompound);
+            defaultLoot.add(nbtCompound);
+        }
+        root.put("defaultLoot", defaultLoot);
+        
         nbt.put(NBT_KEY, root);
     }
     

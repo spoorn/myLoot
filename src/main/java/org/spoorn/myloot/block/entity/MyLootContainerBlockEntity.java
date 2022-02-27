@@ -2,8 +2,10 @@ package org.spoorn.myloot.block.entity;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 
 import javax.annotation.Nullable;
 
@@ -12,6 +14,10 @@ public interface MyLootContainerBlockEntity {
     Text getContainerName();
 
     void setLootTable(Identifier id, long seed);
+    
+    DefaultedList<ItemStack> getOriginalInventory();
+    
+    DefaultedList<ItemStack> getDefaultLoot();
 
     /**
      * This should be called when various container entities are first supplied with generated loot.
