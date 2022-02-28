@@ -1,5 +1,6 @@
 package org.spoorn.myloot.util;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.inventory.Inventory;
@@ -10,8 +11,12 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.spoorn.myloot.MyLoot;
 import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
 import org.spoorn.myloot.config.ModConfig;
+import org.spoorn.spoornpacks.api.Resource;
+import org.spoorn.spoornpacks.type.BlockType;
+import org.spoorn.spoornpacks.type.VehicleType;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -23,6 +28,22 @@ public final class MyLootUtil {
     
     public static boolean supportedBlockEntity(Object be) {
         return (be instanceof ChestBlockEntity) || (be instanceof BarrelBlockEntity);
+    }
+    
+    public static Block getBlockFromResource(Resource resource, BlockType type, String name) {
+        Optional<Block> block = resource.getBlock(type, name);
+        if (block.isEmpty()) {
+            throw new RuntimeException("Could not generate block " + MyLoot.MODID + "." + name + type.getSuffix());
+        }
+        return block.get();
+    }
+
+    public static Item getVehicleItemFromResource(Resource resource, VehicleType type, String name) {
+        Optional<Item> item = resource.getVehicleItem(type, name);
+        if (item.isEmpty()) {
+            throw new RuntimeException("Could not generate vehicleItem " + MyLoot.MODID + "." + name + type.getSuffix());
+        }
+        return item.get();
     }
     
     public static void dropMyLoot(World world, BlockPos pos, Inventory inventory) {
