@@ -19,11 +19,13 @@ public abstract class ServerWorldMixin {
     @Inject(method = "spawnEntity", at = @At(value = "HEAD"), cancellable = true)
     private void replaceWithMyLootEntities(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if ((!(entity instanceof MyLootContainerBlockEntity) && (entity instanceof ChestMinecartEntity))) {
-            MyLootChestMinecartEntity myLootChestMinecartEntity = new MyLootChestMinecartEntity(entity.world, entity.getX(), entity.getY(), entity.getZ());
             StorageMinecartEntityAccessor accessor = (StorageMinecartEntityAccessor) entity;
-            myLootChestMinecartEntity.setLootTable(accessor.getLootTableId(), accessor.getLootTableSeed());
-            this.spawnEntity(myLootChestMinecartEntity);
-            cir.cancel();
+            if (accessor.getLootTableId() != null) {
+                MyLootChestMinecartEntity myLootChestMinecartEntity = new MyLootChestMinecartEntity(entity.world, entity.getX(), entity.getY(), entity.getZ());
+                myLootChestMinecartEntity.setLootTable(accessor.getLootTableId(), accessor.getLootTableSeed());
+                this.spawnEntity(myLootChestMinecartEntity);
+                cir.cancel();
+            }
         }
     }
 }
