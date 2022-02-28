@@ -13,7 +13,8 @@
     "BlockEntityAccessor",
     "LootTableMixin",
     "StorageMinecartEntityAccessor",
-    "EntityAccessor"
+    "EntityAccessor",
+    "StorageMinecartEntityMixin"
   ],
   "client": [
     "ClientPlayerInteractionManagerMixin",

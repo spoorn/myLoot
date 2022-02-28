@@ -14,7 +14,7 @@ public class BarrelBlockMixin {
 
     @Redirect(method = "onStateReplaced", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/util/ItemScatterer;spawn(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/inventory/Inventory;)V"))
-    private void noSpawnForMyLoot(World world, BlockPos pos, Inventory inventory) {
+    private void handleSpawnForMyLoot(World world, BlockPos pos, Inventory inventory) {
         MyLootUtil.dropMyLoot(world, pos, inventory);
     }
 }

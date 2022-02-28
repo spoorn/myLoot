@@ -3,6 +3,7 @@ package org.spoorn.myloot.block.entity.vehicle;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.vehicle.ChestMinecartEntity;
@@ -20,9 +21,12 @@ import net.minecraft.world.World;
 import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
 import org.spoorn.myloot.block.entity.common.MyLootContainerBlockEntityCommon;
+import org.spoorn.myloot.config.ModConfig;
 import org.spoorn.myloot.entity.MyLootEntities;
+import org.spoorn.myloot.item.MyLootItems;
 import org.spoorn.myloot.mixin.EntityAccessor;
 import org.spoorn.myloot.mixin.StorageMinecartEntityAccessor;
+import org.spoorn.myloot.util.MyLootUtil;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -100,8 +104,7 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
 
     @Override
     public ItemStack getPickBlockStack() {
-        // TODO
-        return new ItemStack(Items.MINECART);
+        return new ItemStack(MyLootItems.MY_LOOT_CHEST_MINECART);
     }
 
     @Override
