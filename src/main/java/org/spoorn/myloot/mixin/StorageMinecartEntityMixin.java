@@ -17,4 +17,10 @@ public class StorageMinecartEntityMixin {
     private void handleSpawnForMyLoot(World world, Entity entity, Inventory inventory) {
         MyLootUtil.dropMyLoot(world, entity.getBlockPos(), inventory);
     }
+    
+    @Redirect(method = "remove", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/util/ItemScatterer;spawn(Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;Lnet/minecraft/inventory/Inventory;)V"))
+    private void handleSpawnForMyLootWhenRemoved(World world, Entity entity, Inventory inventory) {
+        MyLootUtil.dropMyLoot(world, entity.getBlockPos(), inventory);
+    }
 }
