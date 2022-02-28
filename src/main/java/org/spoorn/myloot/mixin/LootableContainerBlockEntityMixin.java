@@ -34,7 +34,7 @@ public class LootableContainerBlockEntityMixin {
             return;
         }
         
-        if (be.getWorld() instanceof ServerWorld && MyLootUtil.supportedBlockEntity(be)) {
+        if (be.getWorld() instanceof ServerWorld && MyLootUtil.supportedEntity(be)) {
             LootableContainerReplacer.REPLACEMENT_INFOS.add(new LootableContainerReplacer.ReplacementInfo(be.getWorld().getRegistryKey(), pos, id, random.nextLong()));
         }
     }

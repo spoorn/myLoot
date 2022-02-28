@@ -27,7 +27,7 @@ public abstract class BlockEntityMixin {
      */
     @Inject(method = "setWorld", at = @At(value = "TAIL"))
     private void replaceLootableContainer(World world, CallbackInfo ci) {
-        if (this.world instanceof ServerWorld && MyLootUtil.supportedBlockEntity((Object) this)) {
+        if (this.world instanceof ServerWorld && MyLootUtil.supportedEntity((Object) this)) {
             LootableContainerBlockEntityAccessor accessor = (LootableContainerBlockEntityAccessor) (Object) this;
             if (accessor.getLootTableId() != null) {
                 LootableContainerReplacer.REPLACEMENT_INFOS.add(new LootableContainerReplacer.ReplacementInfo(this.world.getRegistryKey(), this.getPos(), accessor.getLootTableId(), accessor.getLootTableSeed()));

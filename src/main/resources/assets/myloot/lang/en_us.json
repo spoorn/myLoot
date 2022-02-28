@@ -6,7 +6,8 @@
   "myloot.loot_barrel.container.name" : "myLoot Barrel",
   "block.myloot.loot_barrel": "myLoot Barrel",
   "block.myloot.loot_chest": "myLoot Chest",
-  "item.myloot.loot_chest_minecart": "myLoot Chest Minecart",
-  "myloot.loot_chest_minecart.container.name": "myLoot Chest Minecart",
+  "item.myloot.loot_chest_minecart": "Minecart with myLoot Chest",
+  "myloot.loot_chest_minecart.container.name": "Minecart with myLoot Chest",
+  "entity.myloot.loot_chest_minecart": "Minecart with myLoot Chest",
   "itemGroup.myloot.general" : "myLoot"
 }

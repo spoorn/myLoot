@@ -14,7 +14,8 @@
     "LootTableMixin",
     "StorageMinecartEntityAccessor",
     "EntityAccessor",
-    "StorageMinecartEntityMixin"
+    "StorageMinecartEntityMixin",
+    "MineshaftGeneratorMixin"
   ],
   "client": [
     "ClientPlayerInteractionManagerMixin",

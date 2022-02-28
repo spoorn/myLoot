@@ -3,6 +3,7 @@ package org.spoorn.myloot.util;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.entity.vehicle.ChestMinecartEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,8 +27,8 @@ public final class MyLootUtil {
     public static final String PLAYER_INSTANCE_DROP_BEHAVIOR = "PLAYER_INSTANCE";
     public static final String ALL_DROP_BEHAVIOR = "ALL";
     
-    public static boolean supportedBlockEntity(Object be) {
-        return (be instanceof ChestBlockEntity) || (be instanceof BarrelBlockEntity);
+    public static boolean supportedEntity(Object be) {
+        return (be instanceof ChestBlockEntity) || (be instanceof BarrelBlockEntity) || (be instanceof ChestMinecartEntity);
     }
     
     public static Block getBlockFromResource(Resource resource, BlockType type, String name) {
