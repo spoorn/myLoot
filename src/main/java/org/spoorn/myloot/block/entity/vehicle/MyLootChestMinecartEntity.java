@@ -2,7 +2,12 @@ package org.spoorn.myloot.block.entity.vehicle;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.vehicle.ChestMinecartEntity;
@@ -12,6 +17,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
@@ -30,6 +37,8 @@ import java.util.List;
 
 public class MyLootChestMinecartEntity extends ChestMinecartEntity implements MyLootContainerBlockEntity {
 
+    private static final TrackedData<NbtCompound> PLAYERS_OPENED_DATA = DataTracker.registerData(MyLootChestMinecartEntity.class, TrackedDataHandlerRegistry.NBT_COMPOUND);
+    
     private final MyLootContainerBlockEntityCommon common = new MyLootContainerBlockEntityCommon(null);
     
     public MyLootChestMinecartEntity(EntityType<? extends ChestMinecartEntity> entityType, World world) {
@@ -40,6 +49,12 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
     public MyLootChestMinecartEntity(World world, double x, double y, double z) {
         super(world, x, y, z);
         ((EntityAccessor) this).setType(MyLootEntities.MY_LOOT_CHEST_MINECART_ENTITY_TYPE);
+    }
+
+    @Override
+    protected void initDataTracker() {
+        super.initDataTracker();
+        this.dataTracker.startTracking(PLAYERS_OPENED_DATA, new NbtCompound());
     }
 
     @Override
@@ -78,7 +93,21 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
 
     @Override
     public BlockState getDefaultContainedBlock() {
-        return (BlockState) MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, Direction.NORTH);
+        checkAndLoadPlayersOpenedTrackedData();
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (player != null && this.hasPlayerOpened(player)) {
+            return MyLootBlocks.OPENED_MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, Direction.NORTH);
+        } else {
+            return MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, Direction.NORTH);
+        }
+    }
+
+    @Override
+    public ActionResult interact(PlayerEntity player, Hand hand) {
+        if (!player.world.isClient && this.common.addPlayerOpenedIfAbsent(player)) {
+            this.updatePlayersOpenedTrackedData();
+        }
+        return super.interact(player, hand);
     }
 
     @Override
@@ -86,16 +115,40 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
         return this.common.createScreenHandler(syncId, playerInventory, this.getOriginalInventory(), this);
     }
 
+    
+    /*
+        Nbt data is on the server only.
+     */
+    
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         this.common.readNbt(nbt, this);
+        this.updatePlayersOpenedTrackedData();
     }
 
     @Override
-    protected void writeCustomDataToNbt(NbtCompound nbt) {
+    public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         this.common.writeNbt(nbt);
+        this.updatePlayersOpenedTrackedData();
+    }
+
+    /**
+     * We update the tracked data every time the data changes on the server side so it gets sent to clients.
+     * Since read and write Nbt are all on the server, we update it in both of those methods above.
+     */
+    private void updatePlayersOpenedTrackedData() {
+        NbtCompound root = new NbtCompound();
+        this.common.loadPlayersOpenedToNbt(root);
+        this.dataTracker.set(PLAYERS_OPENED_DATA, root);
+    }
+    
+    private void checkAndLoadPlayersOpenedTrackedData() {
+        if (this.dataTracker.isDirty()) {
+            NbtCompound nbt = this.dataTracker.get(PLAYERS_OPENED_DATA);
+            this.common.unloadPlayersOpenedFromNbt(nbt);
+        }
     }
 
     @Override

@@ -15,7 +15,8 @@
     "StorageMinecartEntityAccessor",
     "EntityAccessor",
     "StorageMinecartEntityMixin",
-    "MineshaftGeneratorMixin"
+    "ServerWorldMixin",
+    "ChunkRegionMixin"
   ],
   "client": [
     "ClientPlayerInteractionManagerMixin",

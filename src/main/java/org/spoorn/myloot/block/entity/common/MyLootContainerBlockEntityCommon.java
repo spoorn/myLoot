@@ -24,7 +24,10 @@ import org.spoorn.myloot.block.entity.MyLootInventory;
 import org.spoorn.myloot.util.MyLootUtil;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class MyLootContainerBlockEntityCommon {
     
@@ -34,6 +37,7 @@ public class MyLootContainerBlockEntityCommon {
     @Setter
     private Map<String, MyLootInventory> inventories = new HashMap<>();
     private DefaultedList<ItemStack> defaultLoot = DefaultedList.ofSize(27, ItemStack.EMPTY);
+    @Getter
     private final Set<String> playersOpened = new HashSet<>();
     
     private final ViewerCountManager stateManager;
@@ -72,6 +76,21 @@ public class MyLootContainerBlockEntityCommon {
             myLootInventory = this.inventories.get(playerId);
         }
         return myLootInventory;
+    }
+    
+    public void loadPlayersOpenedToNbt(NbtCompound root) {
+        NbtList playersOpenedList = new NbtList();
+        for (String player : this.playersOpened) {
+            playersOpenedList.add(NbtString.of(player));
+        }
+        root.put("players", playersOpenedList);
+    }
+    
+    public void unloadPlayersOpenedFromNbt(NbtCompound root) {
+        NbtList playersOpened = root.getList("players", NbtElement.STRING_TYPE);
+        for (int i = 0; i < playersOpened.size(); ++i) {
+            this.playersOpened.add(playersOpened.getString(i));
+        }
     }
 
     public void readNbt(NbtCompound nbt, MyLootContainerBlockEntity myLootContainerBlockEntity) {
@@ -169,6 +188,10 @@ public class MyLootContainerBlockEntityCommon {
                 }
             }
         }
+    }
+    
+    public boolean addPlayerOpenedIfAbsent(PlayerEntity player) {
+        return this.playersOpened.add(player.getGameProfile().getId().toString());
     }
 
     public void onClose(PlayerEntity player, BlockEntity blockEntity) {

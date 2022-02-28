@@ -17,6 +17,7 @@ import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
 import org.spoorn.myloot.config.ModConfig;
 import org.spoorn.spoornpacks.api.Resource;
 import org.spoorn.spoornpacks.type.BlockType;
+import org.spoorn.spoornpacks.type.ItemType;
 import org.spoorn.spoornpacks.type.VehicleType;
 
 import java.util.*;
@@ -28,7 +29,8 @@ public final class MyLootUtil {
     public static final String ALL_DROP_BEHAVIOR = "ALL";
     
     public static boolean supportedEntity(Object be) {
-        return (be instanceof ChestBlockEntity) || (be instanceof BarrelBlockEntity) || (be instanceof ChestMinecartEntity);
+        return !(be instanceof MyLootContainerBlockEntity) 
+                && ((be instanceof ChestBlockEntity) || (be instanceof BarrelBlockEntity) || (be instanceof ChestMinecartEntity));
     }
     
     public static Block getBlockFromResource(Resource resource, BlockType type, String name) {
@@ -37,6 +39,14 @@ public final class MyLootUtil {
             throw new RuntimeException("Could not generate block " + MyLoot.MODID + "." + name + type.getSuffix());
         }
         return block.get();
+    }
+
+    public static Item getItemFromResource(Resource resource, ItemType type, String name) {
+        Optional<Item> item = resource.getItem(type, name);
+        if (item.isEmpty()) {
+            throw new RuntimeException("Could not generate item " + MyLoot.MODID + "." + name + type.getSuffix());
+        }
+        return item.get();
     }
 
     public static Item getVehicleItemFromResource(Resource resource, VehicleType type, String name) {
