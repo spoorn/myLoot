@@ -23,6 +23,7 @@ import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
 import org.spoorn.myloot.block.entity.MyLootInventory;
 import org.spoorn.myloot.util.MyLootUtil;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class MyLootContainerBlockEntityCommon {
@@ -37,7 +38,7 @@ public class MyLootContainerBlockEntityCommon {
     
     private final ViewerCountManager stateManager;
     
-    public MyLootContainerBlockEntityCommon(ViewerCountManager viewerCountManager) {
+    public MyLootContainerBlockEntityCommon(@Nullable ViewerCountManager viewerCountManager) {
         this.stateManager = viewerCountManager;
     }
 
@@ -154,7 +155,7 @@ public class MyLootContainerBlockEntityCommon {
             World world = blockEntity.getWorld();
             BlockPos pos = blockEntity.getPos();
             BlockState cachedState = blockEntity.getCachedState();
-            if (!player.isSpectator()) {
+            if (this.stateManager != null && !player.isSpectator()) {
                 this.stateManager.openContainer(player, world, pos, cachedState);
             }
 
@@ -171,13 +172,13 @@ public class MyLootContainerBlockEntityCommon {
     }
 
     public void onClose(PlayerEntity player, BlockEntity blockEntity) {
-        if (!blockEntity.isRemoved() && !player.isSpectator()) {
+        if (this.stateManager != null && !blockEntity.isRemoved() && !player.isSpectator()) {
             this.stateManager.closeContainer(player, blockEntity.getWorld(), blockEntity.getPos(), blockEntity.getCachedState());
         }
     }
 
     public void onScheduledTick(BlockEntity blockEntity) {
-        if (!blockEntity.isRemoved()) {
+        if (this.stateManager != null && !blockEntity.isRemoved()) {
             this.stateManager.updateViewerCount(blockEntity.getWorld(), blockEntity.getPos(), blockEntity.getCachedState());
         }
     }

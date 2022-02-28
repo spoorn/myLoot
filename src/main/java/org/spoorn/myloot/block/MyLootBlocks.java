@@ -10,6 +10,8 @@ import net.minecraft.util.Identifier;
 import org.spoorn.myloot.MyLoot;
 import org.spoorn.myloot.block.entity.MyLootBarrelBlockEntity;
 import org.spoorn.myloot.block.entity.MyLootChestBlockEntity;
+import org.spoorn.myloot.block.entity.vehicle.MyLootChestMinecartEntity;
+import org.spoorn.myloot.block.entity.vehicle.MyLootChestMinecartEntityFactory;
 import org.spoorn.spoornpacks.api.Resource;
 import org.spoorn.spoornpacks.api.ResourceBuilder;
 import org.spoorn.spoornpacks.api.ResourceFactory;
@@ -17,6 +19,7 @@ import org.spoorn.spoornpacks.core.generator.ResourceGenerator;
 import org.spoorn.spoornpacks.type.BlockType;
 import org.spoorn.spoornpacks.type.ItemType;
 import org.spoorn.spoornpacks.type.ResourceType;
+import org.spoorn.spoornpacks.type.VehicleType;
 
 public class MyLootBlocks {
     
@@ -41,7 +44,10 @@ public class MyLootBlocks {
                 .addCustomResourceProvider("loot_barrel", ResourceType.BLOCK_LOOT_TABLE,
                         ResourceGenerator.newBlockLootTableBuilder(MyLoot.MODID, "loot", BlockType.BARREL).barrel("minecraft:barrel"))
                 .addCustomResourceProvider("loot_chest", ResourceType.ITEM_MODEL,
-                        ResourceGenerator.newModelItemBuilder(MyLoot.MODID, "loot", ItemType.CHEST).chest("minecraft:block/oak_planks"));
+                        ResourceGenerator.newModelItemBuilder(MyLoot.MODID, "loot", ItemType.CHEST).chest("minecraft:block/oak_planks"))
+                .addMinecart(VehicleType.CHEST_MINECART, new MyLootChestMinecartEntityFactory())
+                .addCustomResourceProvider("loot_chest_minecart",ResourceType.RECIPE,
+                        ResourceGenerator.newRecipeBuilder(MyLoot.MODID, "loot", VehicleType.CHEST_MINECART).minecart("myloot:loot_chest", "minecraft:minecart", "myloot:loot_chest_minecart"));
         Resource resource = MyLoot.RESOURCE_GENERATOR.generate(rb);
         if (resource.getBlock(BlockType.CHEST, lootName).isEmpty()) {
             throw new RuntimeException("Could not generate block myLoot.loot_chest");
@@ -53,6 +59,10 @@ public class MyLootBlocks {
         MY_LOOT_BARREL_BLOCK = resource.getBlock(BlockType.BARREL, lootName).get();
 
         if (resource.getItem(ItemType.CHEST, lootName).isEmpty()) {
+            throw new RuntimeException("Could not generate item myLoot.loot_chest");
+        }
+
+        if (resource.getVehicleItem(VehicleType.CHEST_MINECART, lootName).isEmpty()) {
             throw new RuntimeException("Could not generate item myLoot.loot_chest");
         }
     }

@@ -155,6 +155,7 @@ public class MyLootChestBlockEntity extends ChestBlockEntity implements MyLootCo
 
     @Override
     public void clear() {
+        super.clear();
         this.common.clear();
     }
 

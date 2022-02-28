@@ -11,7 +11,9 @@
     "ChestBlockMixin",
     "BarrelBlockMixin",
     "BlockEntityAccessor",
-    "LootTableMixin"
+    "LootTableMixin",
+    "StorageMinecartEntityAccessor",
+    "EntityAccessor"
   ],
   "client": [
     "ClientPlayerInteractionManagerMixin",

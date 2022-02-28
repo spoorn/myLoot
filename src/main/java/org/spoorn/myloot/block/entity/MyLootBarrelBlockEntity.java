@@ -157,6 +157,7 @@ public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLoot
 
     @Override
     public void clear() {
+        super.clear();
         this.common.clear();
     }
 
