@@ -69,7 +69,7 @@ public class LootableContainerReplacer {
 
                     BlockEntity newBlockEntity = serverWorld.getBlockEntity(pos);
                     if (newBlockEntity instanceof MyLootContainerBlockEntity myLootContainerBlockEntity) {
-                        myLootContainerBlockEntity.setLootTable(replacementInfo.lootTableId, replacementInfo.lootTableSeed);
+                        myLootContainerBlockEntity.setMyLootLootTable(replacementInfo.lootTableId, replacementInfo.lootTableSeed);
                     }
                 }
             }

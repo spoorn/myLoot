@@ -14,7 +14,7 @@ public interface MyLootContainerBlockEntity {
 
     Text getContainerName();
 
-    void setLootTable(Identifier id, long seed);
+    void setMyLootLootTable(Identifier id, long seed);
     
     DefaultedList<ItemStack> getOriginalInventory();
     

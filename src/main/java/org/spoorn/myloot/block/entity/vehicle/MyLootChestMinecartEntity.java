@@ -168,7 +168,7 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
        Not sure why inheriting superclass methods do not count for interface implementations, but this gets around it.
     */
     @Override
-    public void setLootTable(Identifier id, long seed) {
+    public void setMyLootLootTable(Identifier id, long seed) {
         super.setLootTable(id, seed);
     }
 
