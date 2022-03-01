@@ -16,9 +16,11 @@ public abstract class ChunkRegionMixin {
 
     @Shadow public abstract boolean spawnEntity(Entity entity);
 
+    @Shadow public abstract boolean isClient();
+
     @Inject(method = "spawnEntity", at = @At(value = "HEAD"), cancellable = true)
     private void replaceWithMyLootEntities(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        if ((!(entity instanceof MyLootContainerBlockEntity) && (entity instanceof ChestMinecartEntity))) {
+        if (!this.isClient() && (!(entity instanceof MyLootContainerBlockEntity) && (entity instanceof ChestMinecartEntity))) {
             StorageMinecartEntityAccessor accessor = (StorageMinecartEntityAccessor) entity;
             if (accessor.getLootTableId() != null) {
                 MyLootChestMinecartEntity myLootChestMinecartEntity = new MyLootChestMinecartEntity(entity.world, entity.getX(), entity.getY(), entity.getZ());

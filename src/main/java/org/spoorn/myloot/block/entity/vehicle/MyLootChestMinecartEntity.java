@@ -2,8 +2,6 @@ package org.spoorn.myloot.block.entity.vehicle;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -93,13 +91,14 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
 
     @Override
     public BlockState getDefaultContainedBlock() {
-        checkAndLoadPlayersOpenedTrackedData();
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (player != null && this.hasPlayerOpened(player)) {
-            return MyLootBlocks.OPENED_MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, Direction.NORTH);
-        } else {
-            return MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, Direction.NORTH);
-        }
+        if (this.world.isClient) {
+            checkAndLoadPlayersOpenedTrackedData();
+            // Some class loading indirection
+            if (this.common.hasPlayerOpenedOnClient()) {
+                return MyLootBlocks.OPENED_MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, Direction.NORTH);
+            }
+        } 
+        return MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, Direction.NORTH);
     }
 
     @Override

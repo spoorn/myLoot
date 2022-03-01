@@ -2,10 +2,15 @@ package org.spoorn.myloot.block.entity.common;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ViewerCountManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -48,6 +53,16 @@ public class MyLootContainerBlockEntityCommon {
 
     public boolean hasPlayerOpened(PlayerEntity player) {
         return this.playersOpened.contains(player.getGameProfile().getId().toString());
+    }
+
+    @Environment(EnvType.CLIENT)
+    public boolean hasPlayerOpenedOnClient() {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
+            return player != null && this.hasPlayerOpened(player);
+        } else {
+            return false;
+        }
     }
 
     public DefaultedList<ItemStack> getDefaultLoot() {
