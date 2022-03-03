@@ -42,6 +42,7 @@ public class MyLoot implements ModInitializer {
             .appendItems((itemStacks) -> {
                 itemStacks.add(new ItemStack(MyLootItems.MY_LOOT_CHEST));
                 itemStacks.add(new ItemStack(MyLootItems.MY_LOOT_CHEST_MINECART));
+                itemStacks.add(new ItemStack(MyLootItems.MY_LOOT_SHULKER_BOX));
             })
             .build();
     
@@ -90,7 +91,10 @@ public class MyLoot implements ModInitializer {
                 .addCustomResourceProvider("opened_loot_chest", ResourceType.RECIPE, new EmptyResourceProvider())
                 // Shulker Boxes
                 .addBlock(BlockType.SHULKER_BOX, "loot", new MyLootShulkerBoxBlock(null, FabricBlockSettings.copyOf(Blocks.SHULKER_BOX)), (pos, state) -> new MyLootShulkerBoxBlockEntity(null, pos, state))
-                .addItem(ItemType.SHULKER_BOX);
+                .addItem(ItemType.SHULKER_BOX)
+                // Generate resources for opened shulker box for custom rendering
+                .addBlock(BlockType.SHULKER_BOX, "opened_loot", new MyLootShulkerBoxBlock(null, FabricBlockSettings.copyOf(Blocks.SHULKER_BOX)), (pos, state) -> new MyLootShulkerBoxBlockEntity(null, pos, state))
+                .addCustomResourceProvider("opened_loot_shulker_box", ResourceType.RECIPE, new EmptyResourceProvider());
         Resource resource = MyLoot.RESOURCE_GENERATOR.generate(rb);
         
         // Blocks

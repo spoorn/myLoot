@@ -37,7 +37,7 @@ import java.util.Set;
 
 public class MyLootContainerBlockEntityCommon {
     
-    private static final String NBT_KEY = "myLoot";
+    public static final String NBT_KEY = "myLoot";
 
     @Getter
     @Setter
