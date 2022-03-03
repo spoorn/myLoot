@@ -6,11 +6,9 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
-import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
@@ -39,6 +37,13 @@ public class MyLootShulkerBoxBlock extends ShulkerBoxBlock {
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
         return ShulkerBoxBlock.checkType(type, MyLootEntities.MY_LOOT_SHULKER_BOX_BLOCK_ENTITY_TYPE, ShulkerBoxBlockEntity::tick);
+    }
+
+    @Override
+    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+        ItemStack itemStack = new ItemStack(this);
+        world.getBlockEntity(pos, MyLootEntities.MY_LOOT_SHULKER_BOX_BLOCK_ENTITY_TYPE).ifPresent(blockEntity -> blockEntity.setStackNbt(itemStack));
+        return itemStack;
     }
 
     // TODO: override

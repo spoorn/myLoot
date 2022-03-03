@@ -66,7 +66,7 @@ public class LootableContainerReplacer {
                     } else if (oldBlockState.getBlock().equals(Blocks.BARREL)) {
                         serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_BARREL_BLOCK.getDefaultState().with(Properties.FACING, oldBlockState.get(Properties.FACING)));
                     } else if (oldBlockState.getBlock().equals(Blocks.SHULKER_BOX)) {
-                        serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_SHULKER_BOX_BLOCk.getDefaultState().with(Properties.FACING, oldBlockState.get(Properties.FACING)));
+                        serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_SHULKER_BOX_BLOCK.getDefaultState().with(Properties.FACING, oldBlockState.get(Properties.FACING)));
                     } else {
                         log.error("MyLoot replacer contains an unsupported block " + oldBlockState.getBlock());
                         continue;

@@ -10,13 +10,13 @@ public class MyLootBlocks {
     public static Block MY_LOOT_CHEST_BLOCK;
     public static Block OPENED_MY_LOOT_CHEST_BLOCK;
     public static Block MY_LOOT_BARREL_BLOCK;
-    public static Block MY_LOOT_SHULKER_BOX_BLOCk;
+    public static Block MY_LOOT_SHULKER_BOX_BLOCK;
     
     public static void bootstrap(Resource resource) {
         String lootName = "loot";
         MY_LOOT_CHEST_BLOCK = MyLootUtil.getBlockFromResource(resource, BlockType.CHEST, lootName);
         OPENED_MY_LOOT_CHEST_BLOCK = MyLootUtil.getBlockFromResource(resource, BlockType.CHEST, "opened_" + lootName);
         MY_LOOT_BARREL_BLOCK = MyLootUtil.getBlockFromResource(resource, BlockType.BARREL, lootName);
-        MY_LOOT_SHULKER_BOX_BLOCk =  MyLootUtil.getBlockFromResource(resource, BlockType.SHULKER_BOX, lootName);
+        MY_LOOT_SHULKER_BOX_BLOCK =  MyLootUtil.getBlockFromResource(resource, BlockType.SHULKER_BOX, lootName);
     }
 }

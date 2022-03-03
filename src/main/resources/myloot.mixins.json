@@ -16,7 +16,8 @@
     "EntityAccessor",
     "StorageMinecartEntityMixin",
     "ServerWorldMixin",
-    "ChunkRegionMixin"
+    "ChunkRegionMixin",
+    "ShulkerBoxBlockMixin"
   ],
   "client": [
     "ClientPlayerInteractionManagerMixin",
