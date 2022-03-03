@@ -13,8 +13,10 @@ import org.jetbrains.annotations.Nullable;
 import org.spoorn.myloot.block.MyLootBarrelBlock;
 import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.block.MyLootChestBlock;
+import org.spoorn.myloot.block.MyLootShulkerBoxBlock;
 import org.spoorn.myloot.block.entity.MyLootBarrelBlockEntity;
 import org.spoorn.myloot.block.entity.MyLootChestBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootShulkerBoxBlockEntity;
 import org.spoorn.myloot.block.entity.vehicle.MyLootChestMinecartEntityFactory;
 import org.spoorn.myloot.config.ModConfig;
 import org.spoorn.myloot.core.LootableContainerReplacer;
@@ -85,7 +87,10 @@ public class MyLoot implements ModInitializer {
                         ResourceGenerator.newBlockLootTableBuilder(MyLoot.MODID, "opened_loot", BlockType.CHEST).chest("minecraft:chest"))
                 .addCustomResourceProvider("opened_loot_chest", ResourceType.ITEM_MODEL,
                         ResourceGenerator.newModelItemBuilder(MyLoot.MODID, "opened_loot", ItemType.CHEST).chest("minecraft:block/oak_planks"))
-                .addCustomResourceProvider("opened_loot_chest", ResourceType.RECIPE, new EmptyResourceProvider());
+                .addCustomResourceProvider("opened_loot_chest", ResourceType.RECIPE, new EmptyResourceProvider())
+                // Shulker Boxes
+                .addBlock(BlockType.SHULKER_BOX, "loot", new MyLootShulkerBoxBlock(null, FabricBlockSettings.copyOf(Blocks.SHULKER_BOX)), (pos, state) -> new MyLootShulkerBoxBlockEntity(null, pos, state))
+                .addItem(ItemType.SHULKER_BOX);
         Resource resource = MyLoot.RESOURCE_GENERATOR.generate(rb);
         
         // Blocks

@@ -1,8 +1,14 @@
 package org.spoorn.myloot.util;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.ChestMinecartEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
@@ -20,6 +26,7 @@ import org.spoorn.spoornpacks.type.BlockType;
 import org.spoorn.spoornpacks.type.ItemType;
 import org.spoorn.spoornpacks.type.VehicleType;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -30,7 +37,17 @@ public final class MyLootUtil {
     
     public static boolean supportedEntity(Object be) {
         return !(be instanceof MyLootContainerBlockEntity) 
-                && ((be instanceof ChestBlockEntity) || (be instanceof BarrelBlockEntity) || (be instanceof ChestMinecartEntity));
+                && ((be instanceof ChestBlockEntity) || (be instanceof BarrelBlockEntity) || (be instanceof ChestMinecartEntity) || (be instanceof ShulkerBoxBlockEntity));
+    }
+    
+    @Nullable
+    @Environment(EnvType.CLIENT)
+    public static PlayerEntity getClientPlayerEntity() {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            return MinecraftClient.getInstance().player;
+        } else {
+            return null;
+        }
     }
     
     public static Block getBlockFromResource(Resource resource, BlockType type, String name) {

@@ -20,7 +20,8 @@
   ],
   "client": [
     "ClientPlayerInteractionManagerMixin",
-    "ChestBlockEntityRendererMixin"
+    "ChestBlockEntityRendererMixin",
+    "ShulkerBoxBlockEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

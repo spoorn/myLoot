@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.minecraft.block.BarrelBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.Inventory;
@@ -61,10 +61,15 @@ public class LootableContainerReplacer {
                 if (replacementInfo.lootTableId != null && MyLootUtil.supportedEntity(oldBlockEntity) && serverWorld.isChunkLoaded(pos)) {
                     serverWorld.removeBlockEntity(pos);
                     
-                    if (oldBlockState.getBlock() instanceof ChestBlock) {
+                    if (oldBlockState.getBlock().equals(Blocks.CHEST)) {
                         serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, oldBlockState.get(ChestBlock.FACING)));
-                    } else if (oldBlockState.getBlock() instanceof BarrelBlock) {
+                    } else if (oldBlockState.getBlock().equals(Blocks.BARREL)) {
                         serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_BARREL_BLOCK.getDefaultState().with(Properties.FACING, oldBlockState.get(Properties.FACING)));
+                    } else if (oldBlockState.getBlock().equals(Blocks.SHULKER_BOX)) {
+                        serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_SHULKER_BOX_BLOCk.getDefaultState().with(Properties.FACING, oldBlockState.get(Properties.FACING)));
+                    } else {
+                        log.error("MyLoot replacer contains an unsupported block " + oldBlockState.getBlock());
+                        continue;
                     }
 
                     BlockEntity newBlockEntity = serverWorld.getBlockEntity(pos);

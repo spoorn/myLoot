@@ -21,6 +21,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -78,6 +79,12 @@ public class MyLootContainerBlockEntityCommon {
         PlayerEntity player = playerInventory.player;
         Inventory inventory = getOrCreateNewInstancedInventoryIfAbsent(player, defaultList, myLootContainerBlockEntity);
         return GenericContainerScreenHandler.createGeneric9x3(syncId, playerInventory, inventory);
+    }
+
+    public ScreenHandler createShulkerBoxScreenHandler(int syncId, PlayerInventory playerInventory, DefaultedList<ItemStack> defaultList, MyLootContainerBlockEntity myLootContainerBlockEntity) {
+        PlayerEntity player = playerInventory.player;
+        Inventory inventory = getOrCreateNewInstancedInventoryIfAbsent(player, defaultList, myLootContainerBlockEntity);
+        return new ShulkerBoxScreenHandler(syncId, playerInventory, inventory);
     }
     
     public Inventory getOrCreateNewInstancedInventoryIfAbsent(PlayerEntity player, DefaultedList<ItemStack> defaultList, MyLootContainerBlockEntity myLootContainerBlockEntity) {
