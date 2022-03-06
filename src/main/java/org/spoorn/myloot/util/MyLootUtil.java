@@ -75,7 +75,8 @@ public final class MyLootUtil {
     }
     
     public static void dropMyLoot(World world, BlockPos pos, Inventory inventory) {
-        if (inventory instanceof MyLootContainerBlockEntity myLootContainerBlockEntity) {
+        // If container hasn't been opened, drop the default loot
+        if (inventory instanceof MyLootContainerBlockEntity myLootContainerBlockEntity && myLootContainerBlockEntity.hasBeenOpened()) {
             String dropBehavior = ModConfig.get().dropBehavior;
             if (ALL_DROP_BEHAVIOR.equals(dropBehavior)) {
                 for (Inventory inv : myLootContainerBlockEntity.getAllInstancedInventories()) {

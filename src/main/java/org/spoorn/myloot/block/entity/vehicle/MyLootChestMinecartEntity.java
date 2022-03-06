@@ -60,6 +60,11 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
         return new TranslatableText("myloot.loot_chest_minecart.container.name");
     }
 
+    @Override
+    public boolean hasBeenOpened() {
+        return !this.common.getPlayersOpened().isEmpty();
+    }
+
     public boolean hasPlayerOpened(PlayerEntity player) {
         return this.common.hasPlayerOpened(player);
     }

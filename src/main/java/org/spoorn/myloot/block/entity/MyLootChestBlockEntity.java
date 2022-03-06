@@ -76,6 +76,11 @@ public class MyLootChestBlockEntity extends ChestBlockEntity implements MyLootCo
         return new TranslatableText("myloot.loot_chest.container.name");
     }
 
+    @Override
+    public boolean hasBeenOpened() {
+        return !this.common.getPlayersOpened().isEmpty();
+    }
+
     public boolean hasPlayerOpened(PlayerEntity player) {
         return this.common.hasPlayerOpened(player);
     }

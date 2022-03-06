@@ -39,6 +39,11 @@ public class MyLootShulkerBoxBlockEntity extends ShulkerBoxBlockEntity implement
         return new TranslatableText("myloot.loot_shulker_box.container.name");
     }
 
+    @Override
+    public boolean hasBeenOpened() {
+        return !this.common.getPlayersOpened().isEmpty();
+    }
+
     public boolean hasPlayerOpened(PlayerEntity player) {
         return this.common.hasPlayerOpened(player);
     }

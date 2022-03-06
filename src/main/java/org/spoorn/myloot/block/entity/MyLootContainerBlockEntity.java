@@ -33,6 +33,8 @@ public interface MyLootContainerBlockEntity {
 
     boolean canPlayerUse(PlayerEntity player);
 
+    boolean hasBeenOpened();
+    
     boolean hasPlayerOpened(PlayerEntity player);
 
     @Nullable

@@ -78,6 +78,11 @@ public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLoot
         return new TranslatableText("myloot.loot_barrel.container.name");
     }
 
+    @Override
+    public boolean hasBeenOpened() {
+        return !this.common.getPlayersOpened().isEmpty();
+    }
+    
     public boolean hasPlayerOpened(PlayerEntity player) {
         return this.common.hasPlayerOpened(player);
     }
