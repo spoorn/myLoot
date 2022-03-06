@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLootContainerBlockEntity {
+public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLootContainer {
 
     public final ViewerCountManager stateManager = new ViewerCountManager(){
 

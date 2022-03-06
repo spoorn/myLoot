@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.block.MyLootShulkerBoxBlock;
-import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.block.entity.common.MyLootContainerBlockEntityCommon;
 import org.spoorn.myloot.util.MyLootUtil;
 
@@ -54,8 +54,8 @@ public class ShulkerBoxBlockMixin {
     
     @Redirect(method = "onBreak", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/ShulkerBoxBlockEntity;isEmpty()Z"))
     private boolean alsoCheckPlayerInstancedInventories(ShulkerBoxBlockEntity instance) {
-        if (instance instanceof MyLootContainerBlockEntity myLootContainerBlockEntity) {
-            for (Inventory inventory : myLootContainerBlockEntity.getAllInstancedInventories()) {
+        if (instance instanceof MyLootContainer myLootContainer) {
+            for (Inventory inventory : myLootContainer.getAllInstancedInventories()) {
                 if (!inventory.isEmpty()) {
                     return false;
                 }

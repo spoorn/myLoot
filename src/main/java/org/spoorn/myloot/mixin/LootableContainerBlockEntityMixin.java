@@ -1,8 +1,6 @@
 package org.spoorn.myloot.mixin;
 
-import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -12,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.core.LootableContainerReplacer;
 import org.spoorn.myloot.util.MyLootUtil;
 
@@ -30,7 +28,7 @@ public class LootableContainerBlockEntityMixin {
     private static void replaceLootableContainer(BlockView world, Random random, BlockPos pos, Identifier id, CallbackInfo ci) {
         BlockEntity be = world.getBlockEntity(pos);
         
-        if (id == null || be == null || be instanceof MyLootContainerBlockEntity) {
+        if (id == null || be == null || be instanceof MyLootContainer) {
             return;
         }
         

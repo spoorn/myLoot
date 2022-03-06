@@ -17,7 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.spoorn.myloot.block.MyLootBlocks;
-import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.config.ModConfig;
 import org.spoorn.myloot.util.MyLootUtil;
 
@@ -53,7 +53,7 @@ public class LootableContainerReplacer {
                 BlockPos pos = replacementInfo.pos;
                 BlockEntity oldBlockEntity = serverWorld.getBlockEntity(pos);
 
-                if (oldBlockEntity instanceof MyLootContainerBlockEntity) {
+                if (oldBlockEntity instanceof MyLootContainer) {
                     continue;
                 }
 
@@ -73,8 +73,8 @@ public class LootableContainerReplacer {
                     }
 
                     BlockEntity newBlockEntity = serverWorld.getBlockEntity(pos);
-                    if (newBlockEntity instanceof MyLootContainerBlockEntity myLootContainerBlockEntity) {
-                        myLootContainerBlockEntity.setMyLootLootTable(replacementInfo.lootTableId, replacementInfo.lootTableSeed);
+                    if (newBlockEntity instanceof MyLootContainer myLootContainer) {
+                        myLootContainer.setMyLootLootTable(replacementInfo.lootTableId, replacementInfo.lootTableSeed);
                     }
                 }
             }
@@ -86,8 +86,8 @@ public class LootableContainerReplacer {
      */
     private static void registerInstancedLootDrop() {
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, entity) -> {
-            if (!world.isClient && (entity instanceof MyLootContainerBlockEntity myLootContainerBlockEntity)) {
-                Inventory instancedInventory = myLootContainerBlockEntity.getPlayerInstancedInventory(player);
+            if (!world.isClient && (entity instanceof MyLootContainer myLootContainer)) {
+                Inventory instancedInventory = myLootContainer.getPlayerInstancedInventory(player);
                 if (instancedInventory == null) {
                     //log.error("Got null inventory when checking instanced inventory for player={}, entity={}", player, entity);
                 } else if (MyLootUtil.PLAYER_INSTANCE_DROP_BEHAVIOR.equals(ModConfig.get().dropBehavior)) {

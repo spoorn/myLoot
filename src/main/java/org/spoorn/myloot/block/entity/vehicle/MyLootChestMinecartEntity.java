@@ -22,7 +22,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.spoorn.myloot.block.MyLootBlocks;
-import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.block.entity.common.MyLootContainerBlockEntityCommon;
 import org.spoorn.myloot.entity.MyLootEntities;
 import org.spoorn.myloot.item.MyLootItems;
@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyLootChestMinecartEntity extends ChestMinecartEntity implements MyLootContainerBlockEntity {
+public class MyLootChestMinecartEntity extends ChestMinecartEntity implements MyLootContainer {
 
     private static final TrackedData<NbtCompound> PLAYERS_OPENED_DATA = DataTracker.registerData(MyLootChestMinecartEntity.class, TrackedDataHandlerRegistry.NBT_COMPOUND);
     
@@ -118,7 +118,6 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
     public ScreenHandler getScreenHandler(int syncId, PlayerInventory playerInventory) {
         return this.common.createScreenHandler(syncId, playerInventory, this.getOriginalInventory(), this);
     }
-
     
     /*
         Nbt data is on the server only.

@@ -25,7 +25,7 @@ import org.spoorn.myloot.mixin.BlockEntityAccessor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyLootShulkerBoxBlockEntity extends ShulkerBoxBlockEntity implements MyLootContainerBlockEntity {
+public class MyLootShulkerBoxBlockEntity extends ShulkerBoxBlockEntity implements MyLootContainer {
 
     private final MyLootContainerBlockEntityCommon common = new MyLootContainerBlockEntityCommon(null);
     

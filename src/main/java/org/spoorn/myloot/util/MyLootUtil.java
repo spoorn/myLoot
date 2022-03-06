@@ -19,7 +19,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spoorn.myloot.MyLoot;
-import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.config.ModConfig;
 import org.spoorn.spoornpacks.api.Resource;
 import org.spoorn.spoornpacks.type.BlockType;
@@ -36,7 +36,7 @@ public final class MyLootUtil {
     public static final String ALL_DROP_BEHAVIOR = "ALL";
     
     public static boolean supportedEntity(Object be) {
-        return !(be instanceof MyLootContainerBlockEntity) 
+        return !(be instanceof MyLootContainer) 
                 && ((be instanceof ChestBlockEntity) || (be instanceof BarrelBlockEntity) || (be instanceof ChestMinecartEntity) || (be instanceof ShulkerBoxBlockEntity));
     }
     
@@ -76,16 +76,16 @@ public final class MyLootUtil {
     
     public static void dropMyLoot(World world, BlockPos pos, Inventory inventory) {
         // If container hasn't been opened, drop the default loot
-        if (inventory instanceof MyLootContainerBlockEntity myLootContainerBlockEntity && myLootContainerBlockEntity.hasBeenOpened()) {
+        if (inventory instanceof MyLootContainer myLootContainer && myLootContainer.hasBeenOpened()) {
             String dropBehavior = ModConfig.get().dropBehavior;
             if (ALL_DROP_BEHAVIOR.equals(dropBehavior)) {
-                for (Inventory inv : myLootContainerBlockEntity.getAllInstancedInventories()) {
+                for (Inventory inv : myLootContainer.getAllInstancedInventories()) {
                     ItemScatterer.spawn(world, pos, inv);
                 }
             } else if (PLAYER_INSTANCE_DROP_BEHAVIOR.equals(dropBehavior)) {
-                scatterDifferences(world, pos, myLootContainerBlockEntity.getDefaultLoot(), myLootContainerBlockEntity.getOriginalInventory());
+                scatterDifferences(world, pos, myLootContainer.getDefaultLoot(), myLootContainer.getOriginalInventory());
             } else {
-                throw new RuntimeException("dropBehavior=" + dropBehavior + " is not supported for " + myLootContainerBlockEntity);
+                throw new RuntimeException("dropBehavior=" + dropBehavior + " is not supported for " + myLootContainer);
             }
         } else {
             ItemScatterer.spawn(world, pos, inventory);

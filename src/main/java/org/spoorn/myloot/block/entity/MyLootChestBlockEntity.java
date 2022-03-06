@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MyLootChestBlockEntity extends ChestBlockEntity implements MyLootContainerBlockEntity {
+public class MyLootChestBlockEntity extends ChestBlockEntity implements MyLootContainer {
     
     public final ViewerCountManager stateManager = new ViewerCountManager(){
 

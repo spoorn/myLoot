@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spoorn.myloot.MyLoot;
-import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.util.MyLootUtil;
 import org.spoorn.spoornpacks.client.render.SPTexturedRenderLayers;
 
@@ -30,9 +30,9 @@ public class ShulkerBoxBlockEntityRendererMixin {
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/SpriteIdentifier;getVertexConsumer(Lnet/minecraft/client/render/VertexConsumerProvider;Ljava/util/function/Function;)Lnet/minecraft/client/render/VertexConsumer;"), cancellable = true)
     private void useMyLootShulkerTexture(ShulkerBoxBlockEntity shulkerBoxBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j, CallbackInfo ci) {
         PlayerEntity player = MyLootUtil.getClientPlayerEntity();
-        if (shulkerBoxBlockEntity instanceof MyLootContainerBlockEntity myLootContainerBlockEntity) {
+        if (shulkerBoxBlockEntity instanceof MyLootContainer myLootContainer) {
             SpriteIdentifier spriteIdentifier;
-            if (player != null && myLootContainerBlockEntity.hasPlayerOpened(player)) {
+            if (player != null && myLootContainer.hasPlayerOpened(player)) {
                 spriteIdentifier = SPTexturedRenderLayers.getStandardSprite(MyLoot.MODID, "opened_loot", TexturedRenderLayers.SHULKER_BOXES_ATLAS_TEXTURE);
             } else {
                 spriteIdentifier = SPTexturedRenderLayers.getStandardSprite(MyLoot.MODID, "loot", TexturedRenderLayers.SHULKER_BOXES_ATLAS_TEXTURE);

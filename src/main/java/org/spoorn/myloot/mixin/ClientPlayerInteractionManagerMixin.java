@@ -3,6 +3,8 @@ package org.spoorn.myloot.mixin;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableText;
@@ -15,8 +17,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.config.ModConfig;
 
 @Mixin(ClientPlayerInteractionManager.class)
@@ -45,25 +48,8 @@ public abstract class ClientPlayerInteractionManagerMixin {
     private void preventBreakingMyLootContainer(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
         if (!this.gameMode.isCreative()) {
             BlockEntity blockEntity = this.client.world.getBlockEntity(pos);
-            if (blockEntity instanceof MyLootContainerBlockEntity) {
-                boolean cancelBreaking = false;
-                if (!ModConfig.get().allowNonCreativeBreak) {
-                    this.client.player.sendMessage(DISABLED_ACTIONBAR_BREAK_WARNING, true);
-                    if (!warned) {
-                        this.client.player.sendMessage(DISABLED_CHAT_BREAK_WARNING, false);
-                        warned = true;
-                    }
-                    cancelBreaking = true;
-                } else if (!this.client.player.isSneaking()) {
-                    this.client.player.sendMessage(ACTIONBAR_BREAK_WARNING, true);
-                    if (!warned) {
-                        this.client.player.sendMessage(CHAT_BREAK_WARNING, false);
-                        warned = true;
-                    }
-                    cancelBreaking = true;
-                }
-                
-                if (cancelBreaking) {
+            if (blockEntity instanceof MyLootContainer) {
+                if (shouldCancelBreaking()) {
                     if (this.breakingBlock) {
                         this.cancelBlockBreaking();
                     }
@@ -72,5 +58,37 @@ public abstract class ClientPlayerInteractionManagerMixin {
                 }
             }
         }
+    }
+    
+    @Inject(method = "attackEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V"), cancellable = true)
+    private void preventBreakingMyLootEntities(PlayerEntity player, Entity target, CallbackInfo ci) {
+        if (!player.isCreative() && target instanceof MyLootContainer) {
+            if (shouldCancelBreaking()) {
+                if (this.breakingBlock) {
+                    this.cancelBlockBreaking();
+                }
+                ci.cancel();
+            }
+        }
+    }
+    
+    private boolean shouldCancelBreaking() {
+        boolean cancelBreaking = false;
+        if (!ModConfig.get().allowNonCreativeBreak) {
+            this.client.player.sendMessage(DISABLED_ACTIONBAR_BREAK_WARNING, true);
+            if (!warned) {
+                this.client.player.sendMessage(DISABLED_CHAT_BREAK_WARNING, false);
+                warned = true;
+            }
+            cancelBreaking = true;
+        } else if (!this.client.player.isSneaking()) {
+            this.client.player.sendMessage(ACTIONBAR_BREAK_WARNING, true);
+            if (!warned) {
+                this.client.player.sendMessage(CHAT_BREAK_WARNING, false);
+                warned = true;
+            }
+            cancelBreaking = true;
+        }
+        return cancelBreaking;
     }
 }

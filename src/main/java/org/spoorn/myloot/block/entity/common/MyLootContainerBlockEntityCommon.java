@@ -25,7 +25,7 @@ import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.spoorn.myloot.block.entity.MyLootContainerBlockEntity;
+import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.block.entity.MyLootInventory;
 import org.spoorn.myloot.util.MyLootUtil;
 
@@ -75,24 +75,24 @@ public class MyLootContainerBlockEntityCommon {
     }
 
     public ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory, 
-                                                DefaultedList<ItemStack> defaultList, MyLootContainerBlockEntity myLootContainerBlockEntity) {
+                                                DefaultedList<ItemStack> defaultList, MyLootContainer myLootContainer) {
         PlayerEntity player = playerInventory.player;
-        Inventory inventory = getOrCreateNewInstancedInventoryIfAbsent(player, defaultList, myLootContainerBlockEntity);
+        Inventory inventory = getOrCreateNewInstancedInventoryIfAbsent(player, defaultList, myLootContainer);
         return GenericContainerScreenHandler.createGeneric9x3(syncId, playerInventory, inventory);
     }
 
-    public ScreenHandler createShulkerBoxScreenHandler(int syncId, PlayerInventory playerInventory, DefaultedList<ItemStack> defaultList, MyLootContainerBlockEntity myLootContainerBlockEntity) {
+    public ScreenHandler createShulkerBoxScreenHandler(int syncId, PlayerInventory playerInventory, DefaultedList<ItemStack> defaultList, MyLootContainer myLootContainer) {
         PlayerEntity player = playerInventory.player;
-        Inventory inventory = getOrCreateNewInstancedInventoryIfAbsent(player, defaultList, myLootContainerBlockEntity);
+        Inventory inventory = getOrCreateNewInstancedInventoryIfAbsent(player, defaultList, myLootContainer);
         return new ShulkerBoxScreenHandler(syncId, playerInventory, inventory);
     }
     
-    public Inventory getOrCreateNewInstancedInventoryIfAbsent(PlayerEntity player, DefaultedList<ItemStack> defaultList, MyLootContainerBlockEntity myLootContainerBlockEntity) {
+    public Inventory getOrCreateNewInstancedInventoryIfAbsent(PlayerEntity player, DefaultedList<ItemStack> defaultList, MyLootContainer myLootContainer) {
         String playerId = player.getGameProfile().getId().toString();
         MyLootInventory myLootInventory;
         if (!this.inventories.containsKey(playerId)) {
             DefaultedList<ItemStack> clonedList = MyLootUtil.deepCloneInventory(defaultList);
-            myLootInventory = new MyLootInventory(clonedList, myLootContainerBlockEntity);
+            myLootInventory = new MyLootInventory(clonedList, myLootContainer);
             this.inventories.put(playerId, myLootInventory);
         } else {
             myLootInventory = this.inventories.get(playerId);
@@ -115,7 +115,7 @@ public class MyLootContainerBlockEntityCommon {
         }
     }
 
-    public void readNbt(NbtCompound nbt, MyLootContainerBlockEntity myLootContainerBlockEntity) {
+    public void readNbt(NbtCompound nbt, MyLootContainer myLootContainer) {
         this.inventories.clear();
         this.playersOpened.clear();
         this.defaultLoot.clear();
@@ -123,7 +123,7 @@ public class MyLootContainerBlockEntityCommon {
         // Inventories
         for (String playerId : root.getKeys()) {
             NbtCompound sub = root.getCompound(playerId);
-            MyLootInventory inventory = new MyLootInventory(myLootContainerBlockEntity);
+            MyLootInventory inventory = new MyLootInventory(myLootContainer);
             NbtList nbtList = sub.getList("Items", NbtElement.COMPOUND_TYPE);
             for (int i = 0; i < nbtList.size(); ++i) {
                 NbtCompound nbtCompound = nbtList.getCompound(i);
