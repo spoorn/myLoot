@@ -17,7 +17,11 @@ public class ModConfig implements ConfigData {
             "\t- \"PLAYER_INSTANCE\" to drop player's instanced loot of player who broke the container.\n" +
             "\t- \"ALL\" to drop all instanced loot for all players.")
     public String dropBehavior = "PLAYER_INSTANCE";
-
+    
+    @Comment("Set to false to disable breaking of myLoot containers by players not in creative mode [default = true]\n" +
+            "\tTrue will allow players to break myLoot containers by holding Sneak while breaking.")
+    public boolean allowNonCreativeBreak = true;
+    
     public static void init() {
         AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
         
