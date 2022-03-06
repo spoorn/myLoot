@@ -15,6 +15,6 @@ public class MyLootItems {
     public static void bootstrap(Resource resource) {
         MY_LOOT_CHEST = MyLootUtil.getItemFromResource(resource, ItemType.CHEST, "loot");
         MY_LOOT_CHEST_MINECART = MyLootUtil.getVehicleItemFromResource(resource, VehicleType.CHEST_MINECART, "loot");
-        MY_LOOT_CHEST = MyLootUtil.getItemFromResource(resource, ItemType.SHULKER_BOX, "loot");
+        MY_LOOT_SHULKER_BOX = MyLootUtil.getItemFromResource(resource, ItemType.SHULKER_BOX, "loot");
     }
 }
