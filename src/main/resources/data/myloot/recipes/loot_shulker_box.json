@@ -1,0 +1,19 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "###",
+    "#W#",
+    "###"
+  ],
+  "key" : {
+    "#" : {
+      "item" : "minecraft:golden_apple"
+    },
+    "W" : {
+      "item" : "minecraft:shulker_box"
+    }
+  },
+  "result" : {
+    "item" : "myloot:loot_shulker_box"
+  }
+}
