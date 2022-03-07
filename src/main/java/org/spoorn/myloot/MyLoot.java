@@ -73,6 +73,7 @@ public class MyLoot implements ModInitializer {
                         ResourceGenerator.newModelBlockBuilder(MyLoot.MODID, "loot", BlockType.CHEST).chest("minecraft:block/oak_planks"))
                 .addCustomResourceProvider("loot_chest", ResourceType.BLOCK_LOOT_TABLE,
                         ResourceGenerator.newBlockLootTableBuilder(MyLoot.MODID, "loot", BlockType.CHEST).chest("minecraft:chest"))
+                .addCustomResourceProvider("loot_chest", ResourceType.RECIPE, new EmptyResourceProvider())
                 .addCustomResourceProvider("loot_barrel", ResourceType.BLOCK_LOOT_TABLE,
                         ResourceGenerator.newBlockLootTableBuilder(MyLoot.MODID, "loot", BlockType.BARREL).barrel("minecraft:barrel"))
                 .addCustomResourceProvider("loot_chest", ResourceType.ITEM_MODEL,
