@@ -1,10 +1,17 @@
 {
   "myloot.breakcontainer.actionbarwarning" : "潜行以破坏",
   "myloot.breakcontainer.chatwarning" : "破坏该战利品箱后，其它玩家将无法获取其中的战利品。如果你执意为之，请在破坏时按下潜行键。",
-  "myloot.loot_chest.container.name" : "myLoot箱子",
-  "myloot.container.doubleChest" : "myLoot大型箱子",
-  "myloot.loot_barrel.container.name" : "myLoot木桶",
-  "block.myloot.loot_barrel": "myLoot木桶",
-  "block.myloot.loot_chest": "myLoot箱子",
+  "myloot.breakcontainer.disabledactionbarwarning" : "无法破坏！",
+  "myloot.breakcontainer.disabledwarning" : "配置文件禁用了对于 myLoot 容器的破坏！",
+  "myloot.loot_chest.container.name" : "myLoot 箱子",
+  "myloot.container.doubleChest" : "myLoot 大型箱子",
+  "myloot.loot_shulker_box.container.name" : "myLoot 潜影盒",
+  "myloot.loot_barrel.container.name" : "myLoot 木桶",
+  "block.myloot.loot_barrel": "myLoot 木桶",
+  "block.myloot.loot_chest": "myLoot 箱子",
+  "block.myloot.loot_shulker_box": "myLoot 潜影盒",
+  "item.myloot.loot_chest_minecart": "运输 myLoot 箱子的矿车",
+  "myloot.loot_chest_minecart.container.name": "运输 myLoot 箱子的矿车",
+  "entity.myloot.loot_chest_minecart": "运输 myLoot 箱子的矿车",
   "itemGroup.myloot.general" : "myLoot"
 }
