@@ -20,6 +20,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.block.entity.MyLootContainer;
@@ -58,6 +59,11 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
     @Override
     public Text getContainerName() {
         return new TranslatableText("myloot.loot_chest_minecart.container.name");
+    }
+
+    @Override
+    public Identifier getOriginalLootTableIdentifier() {
+        return this.common.getOriginalLootTableId();
     }
 
     @Override
@@ -112,6 +118,14 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
             this.updatePlayersOpenedTrackedData();
         }
         return super.interact(player, hand);
+    }
+
+    @Override
+    public void generateLoot(@Nullable PlayerEntity player) {
+        if (this.common.getOriginalLootTableId() == null && ((StorageMinecartEntityAccessor) this).getLootTableId() != null) {
+            this.common.setOriginalLootTableId(((StorageMinecartEntityAccessor) this).getLootTableId());
+        }
+        super.generateLoot(player);
     }
 
     @Override
@@ -172,6 +186,9 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
     */
     @Override
     public void setMyLootLootTable(Identifier id, long seed) {
+        if (this.common.getOriginalLootTableId() == null && id != null) {
+            this.common.setOriginalLootTableId(id);
+        }
         super.setLootTable(id, seed);
     }
 
@@ -193,5 +210,16 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
     @Override
     public void onOpen(PlayerEntity player) {
         super.onOpen(player);
+    }
+
+    @Nullable
+    @Override
+    public World getMyLootWorld() {
+        return super.getWorld();
+    }
+
+    @Override
+    public Vec3d getEntityPos() {
+        return super.getPos();
     }
 }

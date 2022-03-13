@@ -2,6 +2,7 @@ package org.spoorn.myloot.block.entity.common;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
@@ -22,11 +23,13 @@ import net.minecraft.nbt.NbtString;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ShulkerBoxScreenHandler;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.block.entity.MyLootInventory;
+import org.spoorn.myloot.config.ModConfig;
 import org.spoorn.myloot.util.MyLootUtil;
 
 import javax.annotation.Nullable;
@@ -35,6 +38,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@Log4j2
 public class MyLootContainerBlockEntityCommon {
     
     public static final String NBT_KEY = "myLoot";
@@ -45,6 +49,9 @@ public class MyLootContainerBlockEntityCommon {
     private DefaultedList<ItemStack> defaultLoot = DefaultedList.ofSize(27, ItemStack.EMPTY);
     @Getter
     private final Set<String> playersOpened = new HashSet<>();
+    @Getter
+    @Setter
+    private Identifier originalLootTableId;
     
     private final ViewerCountManager stateManager;
     
@@ -89,15 +96,35 @@ public class MyLootContainerBlockEntityCommon {
     
     public Inventory getOrCreateNewInstancedInventoryIfAbsent(PlayerEntity player, DefaultedList<ItemStack> defaultList, MyLootContainer myLootContainer) {
         String playerId = player.getGameProfile().getId().toString();
-        MyLootInventory myLootInventory;
+        MyLootInventory myLootInventory = null;
         if (!this.inventories.containsKey(playerId)) {
-            DefaultedList<ItemStack> clonedList = MyLootUtil.deepCloneInventory(defaultList);
-            myLootInventory = new MyLootInventory(clonedList, myLootContainer);
+            // Below code will silently fail if we were unable to randomly generate loot, and instead default to the
+            // original loot to avoid situations where a chest loads empty loot due to errors causing players to get a disadvantage
+            // due to a bug.
+            boolean generatedRandomLoot = false;
+            if (ModConfig.get().enableRandomSeedLootPerPlayer) {
+                try {
+                    myLootInventory = new MyLootInventory(DefaultedList.ofSize(defaultList.size(), ItemStack.EMPTY), myLootContainer);
+                    generatedRandomLoot = MyLootUtil.generateRandomLoot(myLootContainer, myLootInventory, player);
+                } catch (Exception e) {
+                    log.error("Could not generate random seed loot for myLoot container=" + myLootContainer + " player=" + player + ".  Defaulting to original loot");
+                }
+            }
+            
+            if (!generatedRandomLoot) {
+                myLootInventory = cloneDefaultInventory(defaultList, myLootContainer);
+            }
+            
             this.inventories.put(playerId, myLootInventory);
         } else {
             myLootInventory = this.inventories.get(playerId);
         }
         return myLootInventory;
+    }
+    
+    private MyLootInventory cloneDefaultInventory(DefaultedList<ItemStack> defaultList, MyLootContainer myLootContainer) {
+        DefaultedList<ItemStack> inventoryList = MyLootUtil.deepCloneInventory(defaultList);
+        return new MyLootInventory(inventoryList, myLootContainer);
     }
     
     public void loadPlayersOpenedToNbt(NbtCompound root) {
@@ -146,6 +173,16 @@ public class MyLootContainerBlockEntityCommon {
             if (j < 0 || j >= this.defaultLoot.size()) continue;
             this.defaultLoot.set(j, ItemStack.fromNbt(nbtCompound));
         }
+        // Original loot table id
+        String lootTableId = root.getString("origLootTableId");
+        if (!lootTableId.isEmpty()) {
+            this.originalLootTableId = new Identifier(lootTableId);
+            // Corruption safety
+            if (this.originalLootTableId.getNamespace().isEmpty() || this.originalLootTableId.getPath().isEmpty()) {
+                log.warn("myLootContainer={} has invalid originalLootTableId={}", myLootContainer, this.originalLootTableId);
+                this.originalLootTableId = null;
+            }
+        }
     }
 
     public void writeNbt(NbtCompound nbt) {
@@ -184,6 +221,9 @@ public class MyLootContainerBlockEntityCommon {
         }
         root.put("defaultLoot", defaultLoot);
         
+        if (this.originalLootTableId != null && !this.originalLootTableId.getNamespace().isEmpty() && !this.originalLootTableId.getPath().isEmpty()) {
+            root.putString("origLootTableId", this.originalLootTableId.toString());
+        }
         nbt.put(NBT_KEY, root);
     }
     

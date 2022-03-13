@@ -6,6 +6,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -14,6 +17,21 @@ public interface MyLootContainer {
 
     Text getContainerName();
 
+    @Nullable
+    World getMyLootWorld();
+    
+    @Nullable
+    default BlockPos getBlockPos() {
+        return null;
+    }
+    
+    @Nullable
+    default Vec3d getEntityPos() {
+        return null;
+    }
+    
+    Identifier getOriginalLootTableIdentifier();
+    
     void setMyLootLootTable(Identifier id, long seed);
     
     DefaultedList<ItemStack> getOriginalInventory();

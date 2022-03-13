@@ -17,6 +17,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spoorn.myloot.block.entity.common.MyLootContainerBlockEntityCommon;
 import org.spoorn.myloot.entity.MyLootEntities;
@@ -37,6 +38,11 @@ public class MyLootShulkerBoxBlockEntity extends ShulkerBoxBlockEntity implement
     @Override
     public Text getContainerName() {
         return new TranslatableText("myloot.loot_shulker_box.container.name");
+    }
+
+    @Override
+    public Identifier getOriginalLootTableIdentifier() {
+        return this.common.getOriginalLootTableId();
     }
 
     @Override
@@ -71,6 +77,14 @@ public class MyLootShulkerBoxBlockEntity extends ShulkerBoxBlockEntity implement
     @Override
     public void setDefaultLoot() {
         this.common.setDefaultLoot(super.getInvStackList());
+    }
+
+    @Override
+    public void checkLootInteraction(@Nullable PlayerEntity player) {
+        if (this.common.getOriginalLootTableId() == null && this.lootTableId != null) {
+            this.common.setOriginalLootTableId(this.lootTableId);
+        }
+        super.checkLootInteraction(player);
     }
 
     @Override
@@ -131,6 +145,9 @@ public class MyLootShulkerBoxBlockEntity extends ShulkerBoxBlockEntity implement
     */
     @Override
     public void setMyLootLootTable(Identifier id, long seed) {
+        if (this.common.getOriginalLootTableId() == null && id != null) {
+            this.common.setOriginalLootTableId(id);
+        }
         super.setLootTable(id, seed);
     }
 
@@ -142,5 +159,16 @@ public class MyLootShulkerBoxBlockEntity extends ShulkerBoxBlockEntity implement
     @Override
     public boolean canPlayerUse(PlayerEntity player) {
         return super.canPlayerUse(player);
+    }
+
+    @Nullable
+    @Override
+    public World getMyLootWorld() {
+        return super.getWorld();
+    }
+
+    @Override
+    public BlockPos getBlockPos() {
+        return super.getPos();
     }
 }

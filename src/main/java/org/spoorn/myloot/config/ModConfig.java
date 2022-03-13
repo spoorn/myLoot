@@ -22,6 +22,10 @@ public class ModConfig implements ConfigData {
             "\tTrue will allow players to break myLoot containers by holding Sneak while breaking.")
     public boolean allowNonCreativeBreak = true;
     
+    @Comment("Set to true if you want each myLoot container to generate random loot for each player [default = false]\n" +
+            "\tThe default behavior creates the same instanced loot across all players.")
+    public boolean enableRandomSeedLootPerPlayer = false;
+    
     public static void init() {
         AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
         

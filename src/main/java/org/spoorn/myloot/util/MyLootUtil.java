@@ -3,6 +3,7 @@ package org.spoorn.myloot.util;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -13,13 +14,22 @@ import net.minecraft.entity.vehicle.ChestMinecartEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spoorn.myloot.MyLoot;
 import org.spoorn.myloot.block.entity.MyLootContainer;
+import org.spoorn.myloot.block.entity.vehicle.MyLootChestMinecartEntity;
 import org.spoorn.myloot.config.ModConfig;
 import org.spoorn.spoornpacks.api.Resource;
 import org.spoorn.spoornpacks.type.BlockType;
@@ -34,6 +44,7 @@ public final class MyLootUtil {
     
     public static final String PLAYER_INSTANCE_DROP_BEHAVIOR = "PLAYER_INSTANCE";
     public static final String ALL_DROP_BEHAVIOR = "ALL";
+    private static final Random RANDOM = new Random();
     
     public static boolean supportedEntity(Object be) {
         return !(be instanceof MyLootContainer) 
@@ -72,6 +83,33 @@ public final class MyLootUtil {
             throw new RuntimeException("Could not generate vehicleItem " + MyLoot.MODID + "." + name + type.getSuffix());
         }
         return item.get();
+    }
+    
+    public static boolean generateRandomLoot(MyLootContainer myLootContainer, Inventory inventory, PlayerEntity player) {
+        Identifier originalLootTableId = myLootContainer.getOriginalLootTableIdentifier();
+        World world = myLootContainer.getMyLootWorld();
+        if (originalLootTableId != null && world != null && world.getServer() != null) {
+            LootTable lootTable = world.getServer().getLootManager().getTable(originalLootTableId);
+            if (player instanceof ServerPlayerEntity) {
+                Criteria.PLAYER_GENERATES_CONTAINER_LOOT.trigger((ServerPlayerEntity)player, originalLootTableId);
+            }
+
+            LootContext.Builder builder;
+            if (myLootContainer instanceof MyLootChestMinecartEntity && myLootContainer.getEntityPos() != null) {
+                builder = new LootContext.Builder((ServerWorld)world).parameter(LootContextParameters.ORIGIN, myLootContainer.getEntityPos()).random(RANDOM.nextLong());
+            } else if (myLootContainer.getBlockPos() != null) {
+                builder = new LootContext.Builder((ServerWorld)world).parameter(LootContextParameters.ORIGIN, Vec3d.ofCenter(myLootContainer.getBlockPos())).random(RANDOM.nextLong());
+            } else {
+                throw new RuntimeException("Could not generate random loot for myLootContainer=" + myLootContainer + " for player=" + player);
+            }
+           
+            if (player != null) {
+                builder.luck(player.getLuck()).parameter(LootContextParameters.THIS_ENTITY, player);
+            }
+            lootTable.supplyInventory(inventory, builder.build(LootContextTypes.CHEST));
+            return true;
+        }
+        return false;
     }
     
     public static void dropMyLoot(World world, BlockPos pos, Inventory inventory) {

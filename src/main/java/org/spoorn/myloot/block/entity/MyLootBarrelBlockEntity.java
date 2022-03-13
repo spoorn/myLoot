@@ -79,6 +79,11 @@ public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLoot
     }
 
     @Override
+    public Identifier getOriginalLootTableIdentifier() {
+        return this.common.getOriginalLootTableId();
+    }
+
+    @Override
     public boolean hasBeenOpened() {
         return !this.common.getPlayersOpened().isEmpty();
     }
@@ -110,6 +115,14 @@ public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLoot
     @Override
     public void setDefaultLoot() {
         this.common.setDefaultLoot(super.getInvStackList());
+    }
+
+    @Override
+    public void checkLootInteraction(@Nullable PlayerEntity player) {
+        if (this.common.getOriginalLootTableId() == null && this.lootTableId != null) {
+            this.common.setOriginalLootTableId(this.lootTableId);
+        }
+        super.checkLootInteraction(player);
     }
 
     @Override
@@ -185,6 +198,9 @@ public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLoot
     */
     @Override
     public void setMyLootLootTable(Identifier id, long seed) {
+        if (this.common.getOriginalLootTableId() == null && id != null) {
+            this.common.setOriginalLootTableId(id);
+        }
         super.setLootTable(id, seed);
     }
 
@@ -196,5 +212,16 @@ public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLoot
     @Override
     public boolean canPlayerUse(PlayerEntity player) {
         return super.canPlayerUse(player);
+    }
+
+    @Nullable
+    @Override
+    public World getMyLootWorld() {
+        return super.getWorld();
+    }
+
+    @Override
+    public BlockPos getBlockPos() {
+        return super.getPos();
     }
 }
