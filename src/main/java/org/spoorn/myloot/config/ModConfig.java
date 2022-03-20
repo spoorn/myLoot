@@ -61,6 +61,9 @@ public class ModConfig implements Config {
         new BlockMapping("SHULKER_BOX", Arrays.asList("minecraft:shulker_box"))
     );
     
+    @Comment("True to enable replacing of Chest Minecarts with the myLoot variant.  False to disable. [default = true]")
+    public boolean enableChestMinecarts = true;
+    
     public static void init() {
         CONFIG = OmegaConfig.register(ModConfig.class);
         

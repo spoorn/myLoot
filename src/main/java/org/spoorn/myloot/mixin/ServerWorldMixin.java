@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.block.entity.vehicle.MyLootChestMinecartEntity;
+import org.spoorn.myloot.config.ModConfig;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin {
@@ -18,7 +19,7 @@ public abstract class ServerWorldMixin {
 
     @Inject(method = "spawnEntity", at = @At(value = "HEAD"), cancellable = true)
     private void replaceWithMyLootEntities(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        if ((!(entity instanceof MyLootContainer) && (entity instanceof ChestMinecartEntity))) {
+        if (ModConfig.get().enableChestMinecarts && (!(entity instanceof MyLootContainer) && (entity instanceof ChestMinecartEntity))) {
             StorageMinecartEntityAccessor accessor = (StorageMinecartEntityAccessor) entity;
             if (accessor.getLootTableId() != null) {
                 MyLootChestMinecartEntity myLootChestMinecartEntity = new MyLootChestMinecartEntity(entity.world, entity.getX(), entity.getY(), entity.getZ());
