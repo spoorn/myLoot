@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.Inventory;
@@ -18,12 +18,14 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.block.entity.MyLootContainer;
+import org.spoorn.myloot.config.BlockMapping;
 import org.spoorn.myloot.config.ModConfig;
 import org.spoorn.myloot.util.MyLootUtil;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 /**
  * Replaces world generated loot containers with myLoot containers if applicable.
@@ -33,10 +35,25 @@ import java.util.Queue;
 public class LootableContainerReplacer {
     
     public static Queue<ReplacementInfo> REPLACEMENT_INFOS = new ArrayDeque<>();
+    public static final Map<String, Block> BLOCK_REVERSE_MAPPING = new HashMap<>();
+    private static final Map<Pattern, Block> COMPILED_PATTERNS = new HashMap<>();
     
     public static void init() {
         registerTickCallback();
         registerInstancedLootDrop();
+        for (BlockMapping blockMapping : ModConfig.get().blockMapping) {
+            String type = blockMapping.myLootType;
+            for (String block : blockMapping.replaces) {
+                if (BLOCK_REVERSE_MAPPING.containsKey(block)) {
+                    log.error("myLoot blockMapping contains duplicate mappings for block={}", block);
+                    throw new RuntimeException("myLoot blockMapping contains duplicate mappings for block=" + block);
+                } else {
+                    Block myLootBlock = MyLootUtil.getMyLootBlockFromName(type);
+                    BLOCK_REVERSE_MAPPING.put(block, myLootBlock);
+                    COMPILED_PATTERNS.put(Pattern.compile(block), myLootBlock);
+                }
+            }
+        }
     }
 
     private static void registerTickCallback() {
@@ -58,18 +75,23 @@ public class LootableContainerReplacer {
                 }
 
                 BlockState oldBlockState = serverWorld.getBlockState(pos);
+                
                 if (replacementInfo.lootTableId != null && MyLootUtil.supportedEntity(oldBlockEntity) && serverWorld.isChunkLoaded(pos)) {
-                    serverWorld.removeBlockEntity(pos);
+                    String blockName = MyLootUtil.getBlockName(oldBlockState.getBlock());
+                    Block replacementBlock = getReplacementBlockIfSupported(blockName);
                     
-                    if (oldBlockState.getBlock().equals(Blocks.CHEST)) {
-                        serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, oldBlockState.get(ChestBlock.FACING)));
-                    } else if (oldBlockState.getBlock().equals(Blocks.BARREL)) {
-                        serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_BARREL_BLOCK.getDefaultState().with(Properties.FACING, oldBlockState.get(Properties.FACING)));
-                    } else if (oldBlockState.getBlock().equals(Blocks.SHULKER_BOX)) {
-                        serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_SHULKER_BOX_BLOCK.getDefaultState().with(Properties.FACING, oldBlockState.get(Properties.FACING)));
-                    } else {
-                        log.error("MyLoot replacer contains an unsupported block " + oldBlockState.getBlock());
+                    if (replacementBlock == null) {
+                        log.warn("MyLoot replacer does not support " + blockName + ", skipping");
                         continue;
+                    }
+                    
+                    serverWorld.removeBlockEntity(pos);
+
+                    if (replacementBlock == MyLootBlocks.MY_LOOT_CHEST_BLOCK) {
+                        // Chest blocks have a different property
+                        serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, oldBlockState.get(ChestBlock.FACING)));
+                    } else {
+                        serverWorld.setBlockState(pos, replacementBlock.getDefaultState().with(Properties.FACING, oldBlockState.get(Properties.FACING)));
                     }
 
                     BlockEntity newBlockEntity = serverWorld.getBlockEntity(pos);
@@ -95,6 +117,20 @@ public class LootableContainerReplacer {
                 }
             }
         });
+    }
+    
+    private static Block getReplacementBlockIfSupported(String blockName) {
+        if (BLOCK_REVERSE_MAPPING.containsKey(blockName)) {
+            return BLOCK_REVERSE_MAPPING.get(blockName);
+        }
+        
+        for (Entry<Pattern, Block> entry : COMPILED_PATTERNS.entrySet()) {
+            if (entry.getKey().matcher(blockName).matches()) {
+                return entry.getValue();
+            }
+        }
+        
+        return null;
     }
     
     @AllArgsConstructor

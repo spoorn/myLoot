@@ -26,8 +26,10 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.spoorn.myloot.MyLoot;
+import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.block.entity.vehicle.MyLootChestMinecartEntity;
 import org.spoorn.myloot.config.ModConfig;
@@ -44,11 +46,39 @@ public final class MyLootUtil {
     
     public static final String PLAYER_INSTANCE_DROP_BEHAVIOR = "PLAYER_INSTANCE";
     public static final String ALL_DROP_BEHAVIOR = "ALL";
+    private static final String CHEST = "CHEST";
+    private static final String BARREL = "BARREL";
+    private static final String SHULKER_BOX = "SHULKER_BOX";
     private static final Random RANDOM = new Random();
     
     public static boolean supportedEntity(Object be) {
         return !(be instanceof MyLootContainer) 
                 && ((be instanceof ChestBlockEntity) || (be instanceof BarrelBlockEntity) || (be instanceof ChestMinecartEntity) || (be instanceof ShulkerBoxBlockEntity));
+    }
+    
+    public static boolean isSupportedMyLootContainer(String s) {
+        return CHEST.equals(s) || BARREL.equals(s) || SHULKER_BOX.equals(s); 
+    }
+    
+    public static String getBlockName(Block block) {
+        return Registry.BLOCK.getId(block).toString();
+    }
+    
+    public static Block getMyLootBlockFromName(String name) {
+        switch (name) {
+            case CHEST -> {
+                return MyLootBlocks.MY_LOOT_CHEST_BLOCK;
+            }
+            case BARREL -> {
+                return MyLootBlocks.MY_LOOT_BARREL_BLOCK;
+            }
+            case SHULKER_BOX -> {
+                return MyLootBlocks.MY_LOOT_SHULKER_BOX_BLOCK;
+            }
+            default -> {
+                throw new IllegalArgumentException("Block=" + name + " is not a valid myLoot block");
+            }
+        }
     }
     
     @Nullable

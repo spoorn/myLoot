@@ -17,10 +17,9 @@ repositories {
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
 
-    // SpoornPacks
+    // SpoornPacks and OmegaConfig
     maven {
         url "https://jitpack.io"
-        content { includeGroup "com.github.spoorn" }
     }
 
     // Cloth Config
@@ -37,12 +36,11 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     
     // SpoornPacks
-    modImplementation "com.github.spoorn:SpoornPacks:${spoornpacks_version}"
-
-    // Cloth-config API
-    modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
+    modImplementation "com.github.spoorn:SpoornPacks:${project.spoornpacks_version}"
+    
+    // Omega Config
+    include("com.github.Draylar.omega-config:omega-config-base:${project.omega_config_version}")
+    modImplementation("com.github.Draylar.omega-config:omega-config-base:${project.omega_config_version}")
 }
 
 processResources {
