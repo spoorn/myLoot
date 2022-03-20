@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.spoorn.myloot.MyLoot;
 import org.spoorn.myloot.util.MyLootUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @ToString
 public class ModConfig implements Config {
     
-    public static ModConfig CONFIG;
+    private static ModConfig CONFIG;
 
     @Comment("Controls behavior of dropped loot when a myLoot container is broken.  [default = PLAYER_INSTANCE]\n" +
             "\t- \"PLAYER_INSTANCE\" to drop player's instanced loot of player who broke the container.\n" +
@@ -63,6 +64,10 @@ public class ModConfig implements Config {
     
     @Comment("True to enable replacing of Chest Minecarts with the myLoot variant.  False to disable. [default = true]")
     public boolean enableChestMinecarts = true;
+    
+    @Comment("Dimensions disable list.  Add dimensions to this list to disable container replacement\n" +
+            "Example: [ \"minecraft:the_nether\" ]")
+    public List<String> disabledDimensions = new ArrayList<>();
     
     public static void init() {
         CONFIG = OmegaConfig.register(ModConfig.class);

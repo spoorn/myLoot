@@ -61,6 +61,11 @@ public class LootableContainerReplacer {
             int size = REPLACEMENT_INFOS.size();
             for (int i = 0; i < size; i++) {
                 ReplacementInfo replacementInfo = REPLACEMENT_INFOS.remove();
+                
+                if (ModConfig.get().disabledDimensions.contains(replacementInfo.worldRegistryKey.getValue().toString())) {
+                    continue;
+                }
+                
                 ServerWorld serverWorld = server.getWorld(replacementInfo.worldRegistryKey);
                 
                 if (serverWorld == null) {
