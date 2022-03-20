@@ -2,6 +2,7 @@ package org.spoorn.myloot.mixin;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.vehicle.ChestMinecartEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.ChunkRegion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,9 +24,12 @@ public abstract class ChunkRegionMixin {
     private void replaceWithMyLootEntities(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if (ModConfig.get().enableChestMinecarts && !this.isClient() && (!(entity instanceof MyLootContainer) && (entity instanceof ChestMinecartEntity))) {
             StorageMinecartEntityAccessor accessor = (StorageMinecartEntityAccessor) entity;
-            if (accessor.getLootTableId() != null) {
+            Identifier lootTableId = accessor.getLootTableId();
+            if (lootTableId != null
+                && !ModConfig.get().disabledDimensions.contains(entity.world.getRegistryKey().getValue().toString())
+                && !ModConfig.get().disabledLootTables.contains(lootTableId.toString())) {
                 MyLootChestMinecartEntity myLootChestMinecartEntity = new MyLootChestMinecartEntity(entity.world, entity.getX(), entity.getY(), entity.getZ());
-                myLootChestMinecartEntity.setLootTable(accessor.getLootTableId(), accessor.getLootTableSeed());
+                myLootChestMinecartEntity.setLootTable(lootTableId, accessor.getLootTableSeed());
                 this.spawnEntity(myLootChestMinecartEntity);
                 cir.cancel();
             }

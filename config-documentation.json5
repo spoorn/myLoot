@@ -59,5 +59,8 @@
   "enableChestMinecarts": true,
   //Dimensions disable list.  Add dimensions to this list to disable container replacement
   //Example: [ "minecraft:the_nether" ]
-  "disabledDimensions": []
+  "disabledDimensions": [],
+  //Loot table disable list.  Add loot table IDs to this list to disable container replacement when the
+  //loot table matches one of these IDs.  Example: [ "minecraft:chests/simple_dungeon" ]
+  "disabledLootTables": []
 }

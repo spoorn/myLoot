@@ -62,7 +62,8 @@ public class LootableContainerReplacer {
             for (int i = 0; i < size; i++) {
                 ReplacementInfo replacementInfo = REPLACEMENT_INFOS.remove();
                 
-                if (ModConfig.get().disabledDimensions.contains(replacementInfo.worldRegistryKey.getValue().toString())) {
+                if (ModConfig.get().disabledDimensions.contains(replacementInfo.worldRegistryKey.getValue().toString())
+                    || ModConfig.get().disabledLootTables.contains(replacementInfo.lootTableId.toString())) {
                     continue;
                 }
                 

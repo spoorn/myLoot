@@ -69,6 +69,10 @@ public class ModConfig implements Config {
             "Example: [ \"minecraft:the_nether\" ]")
     public List<String> disabledDimensions = new ArrayList<>();
     
+    @Comment("Loot table disable list.  Add loot table IDs to this list to disable container replacement when the\n" +
+            "loot table matches one of these IDs.  Example: [ \"minecraft:chests/simple_dungeon\" ]")
+    public List<String> disabledLootTables = new ArrayList<>();
+    
     public static void init() {
         CONFIG = OmegaConfig.register(ModConfig.class);
         
