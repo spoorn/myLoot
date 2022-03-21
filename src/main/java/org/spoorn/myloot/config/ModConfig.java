@@ -103,6 +103,6 @@ public class ModConfig implements Config {
     @Override
     public String getExtension() {
         // For nicer comments parsing in text editors, and backwards compatibility since older versions used Cloth Config with Jankson
-        return ".json5";
+        return "json5";
     }
 }
