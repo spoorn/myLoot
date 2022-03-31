@@ -28,7 +28,6 @@
     "fabricloader": "*",
     "fabric": "*",
     "minecraft": "1.18.x",
-    "cloth-config2": "*",
     "spoornpacks": ">=3.0"
   }
 }

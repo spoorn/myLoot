@@ -21,9 +21,6 @@ repositories {
     maven {
         url "https://jitpack.io"
     }
-
-    // Cloth Config
-    maven { url "https://maven.shedaniel.me/" }
 }
 
 dependencies {
