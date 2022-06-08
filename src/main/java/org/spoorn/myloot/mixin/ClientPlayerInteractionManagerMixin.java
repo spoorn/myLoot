@@ -7,7 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -25,10 +25,10 @@ import org.spoorn.myloot.config.ModConfig;
 @Mixin(ClientPlayerInteractionManager.class)
 public abstract class ClientPlayerInteractionManagerMixin {
 
-    private static final MutableText ACTIONBAR_BREAK_WARNING = new TranslatableText("myloot.breakcontainer.actionbarwarning").setStyle(Style.EMPTY.withColor(Formatting.AQUA));
-    private static final MutableText CHAT_BREAK_WARNING = new TranslatableText("myloot.breakcontainer.chatwarning").setStyle(Style.EMPTY.withColor(Formatting.RED));
-    private static final MutableText DISABLED_ACTIONBAR_BREAK_WARNING = new TranslatableText("myloot.breakcontainer.disabledactionbarwarning").setStyle(Style.EMPTY.withColor(Formatting.AQUA));
-    private static final MutableText DISABLED_CHAT_BREAK_WARNING = new TranslatableText("myloot.breakcontainer.disabledwarning").setStyle(Style.EMPTY.withColor(Formatting.RED));
+    private static final MutableText ACTIONBAR_BREAK_WARNING = Text.translatable("myloot.breakcontainer.actionbarwarning").setStyle(Style.EMPTY.withColor(Formatting.AQUA));
+    private static final MutableText CHAT_BREAK_WARNING = Text.translatable("myloot.breakcontainer.chatwarning").setStyle(Style.EMPTY.withColor(Formatting.RED));
+    private static final MutableText DISABLED_ACTIONBAR_BREAK_WARNING = Text.translatable("myloot.breakcontainer.disabledactionbarwarning").setStyle(Style.EMPTY.withColor(Formatting.AQUA));
+    private static final MutableText DISABLED_CHAT_BREAK_WARNING = Text.translatable("myloot.breakcontainer.disabledwarning").setStyle(Style.EMPTY.withColor(Formatting.RED));
     private boolean warned = false;
 
     @Shadow private GameMode gameMode;

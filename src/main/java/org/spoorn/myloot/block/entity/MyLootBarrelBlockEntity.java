@@ -20,7 +20,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -75,7 +74,7 @@ public class MyLootBarrelBlockEntity extends BarrelBlockEntity implements MyLoot
 
     @Override
     public Text getContainerName() {
-        return new TranslatableText("myloot.loot_barrel.container.name");
+        return Text.translatable("myloot.loot_barrel.container.name");
     }
 
     @Override

@@ -12,7 +12,6 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
@@ -37,7 +36,7 @@ public class MyLootShulkerBoxBlockEntity extends ShulkerBoxBlockEntity implement
 
     @Override
     public Text getContainerName() {
-        return new TranslatableText("myloot.loot_shulker_box.container.name");
+        return Text.translatable("myloot.loot_shulker_box.container.name");
     }
 
     @Override

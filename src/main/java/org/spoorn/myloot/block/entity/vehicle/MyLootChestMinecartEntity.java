@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -58,7 +57,7 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
 
     @Override
     public Text getContainerName() {
-        return new TranslatableText("myloot.loot_chest_minecart.container.name");
+        return Text.translatable("myloot.loot_chest_minecart.container.name");
     }
 
     @Override
@@ -121,11 +120,11 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
     }
 
     @Override
-    public void generateLoot(@Nullable PlayerEntity player) {
+    public void generateInventoryLoot(@Nullable PlayerEntity player) {
         if (this.common.getOriginalLootTableId() == null && ((StorageMinecartEntityAccessor) this).getLootTableId() != null) {
             this.common.setOriginalLootTableId(((StorageMinecartEntityAccessor) this).getLootTableId());
         }
-        super.generateLoot(player);
+        super.generateInventoryLoot(player);
     }
 
     @Override

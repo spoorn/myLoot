@@ -2,7 +2,7 @@ package org.spoorn.myloot.mixin;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
-import net.minecraft.network.packet.s2c.play.PlayerActionResponseS2CPacket;
+import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.server.world.ServerWorld;
@@ -19,11 +19,13 @@ import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.config.ModConfig;
 
 @Mixin(ServerPlayerInteractionManager.class)
-public class ServerPlayerInteractionManagerMixin {
+public abstract class ServerPlayerInteractionManagerMixin {
 
     @Shadow protected ServerWorld world;
 
     @Shadow @Final protected ServerPlayerEntity player;
+
+    @Shadow protected abstract void method_41250(BlockPos pos, boolean success, int sequence, String reason);
 
     @Inject(method = "tryBreakBlock", at = @At(value = "HEAD"), cancellable = true)
     private void preventBreakingMyLootContainerInTryBreakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
@@ -37,11 +39,12 @@ public class ServerPlayerInteractionManagerMixin {
     }
 
     @Inject(method = "processBlockBreakingAction", at = @At(value = "HEAD"), cancellable = true)
-    private void preventBreakingMyLootContainerInBlockBreaking(BlockPos pos, PlayerActionC2SPacket.Action action, Direction direction, int worldHeight, CallbackInfo ci) {
+    private void preventBreakingMyLootContainerInBlockBreaking(BlockPos pos, PlayerActionC2SPacket.Action action, Direction direction, int worldHeight, int sequence, CallbackInfo ci) {
         BlockEntity be = this.world.getBlockEntity(pos);
         if (be instanceof MyLootContainer && !this.player.isCreativeLevelTwoOp()) {
             if (shouldCancelBreaking()) {
-                this.player.networkHandler.sendPacket(new PlayerActionResponseS2CPacket(pos, this.world.getBlockState(pos), action, false, "breaking myLoot containers is disabled in the config"));
+                this.player.networkHandler.sendPacket(new BlockUpdateS2CPacket(pos, this.world.getBlockState(pos)));
+                this.method_41250(pos, false, sequence, "breaking myLoot containers is disabled in the config");
                 ci.cancel();
             }
         }

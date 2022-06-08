@@ -12,7 +12,6 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +52,7 @@ public class MyLootChestBlock extends ChestBlock {
                     if (chestBlockEntity2.hasCustomName()) {
                         return chestBlockEntity2.getDisplayName();
                     }
-                    return new TranslatableText("myloot.container.doubleChest");
+                    return Text.translatable("myloot.container.doubleChest");
                 }
             });
         }

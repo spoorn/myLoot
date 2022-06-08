@@ -20,7 +20,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -73,7 +72,7 @@ public class MyLootChestBlockEntity extends ChestBlockEntity implements MyLootCo
     
     @Override
     public Text getContainerName() {
-        return new TranslatableText("myloot.loot_chest.container.name");
+        return Text.translatable("myloot.loot_chest.container.name");
     }
 
     @Override

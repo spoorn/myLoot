@@ -15,6 +15,7 @@
     "StorageMinecartEntityAccessor",
     "EntityAccessor",
     "StorageMinecartEntityMixin",
+    "VehicleInventoryMixin",
     "ServerWorldMixin",
     "ChunkRegionMixin",
     "ShulkerBoxBlockMixin",
