@@ -23,8 +23,11 @@ import org.spoorn.myloot.config.ModConfig;
 import org.spoorn.myloot.util.MyLootUtil;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.regex.Pattern;
 
 /**
@@ -82,7 +85,7 @@ public class LootableContainerReplacer {
 
                 BlockState oldBlockState = serverWorld.getBlockState(pos);
                 
-                if (replacementInfo.lootTableId != null && MyLootUtil.supportedEntity(oldBlockEntity) && serverWorld.isChunkLoaded(pos)) {
+                if (replacementInfo.lootTableId != null && MyLootUtil.supportedEntity(oldBlockEntity) && serverWorld.getChunk(pos) != null) {
                     String blockName = MyLootUtil.getBlockName(oldBlockState.getBlock());
                     Block replacementBlock = getReplacementBlockIfSupported(blockName);
                     
@@ -91,6 +94,8 @@ public class LootableContainerReplacer {
                         continue;
                     }
                     
+                    // The below must be done on the server thread, as updating chunks is only done on the server main thread
+                    // so putting this on a separate thread would be extremely slow as it just queues updates for the main thread and waits.
                     serverWorld.removeBlockEntity(pos);
 
                     if (replacementBlock == MyLootBlocks.MY_LOOT_CHEST_BLOCK) {
