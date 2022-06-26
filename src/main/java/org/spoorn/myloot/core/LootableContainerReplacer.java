@@ -100,9 +100,9 @@ public class LootableContainerReplacer {
 
                     if (replacementBlock == MyLootBlocks.MY_LOOT_CHEST_BLOCK) {
                         // Chest blocks have a different property
-                        serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, oldBlockState.get(ChestBlock.FACING)));
+                        serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, oldBlockState.get(ChestBlock.FACING)), Block.NOTIFY_LISTENERS);
                     } else {
-                        serverWorld.setBlockState(pos, replacementBlock.getDefaultState().with(Properties.FACING, oldBlockState.get(Properties.FACING)));
+                        serverWorld.setBlockState(pos, replacementBlock.getDefaultState().with(Properties.FACING, oldBlockState.get(Properties.FACING)), Block.NOTIFY_LISTENERS);
                     }
 
                     BlockEntity newBlockEntity = serverWorld.getBlockEntity(pos);
