@@ -1,33 +1,34 @@
 package org.spoorn.myloot.core;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.ChunkStatus;
 import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.config.BlockMapping;
 import org.spoorn.myloot.config.ModConfig;
+import org.spoorn.myloot.mixin.LootableContainerBlockEntityAccessor;
 import org.spoorn.myloot.util.MyLootUtil;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Queue;
 import java.util.regex.Pattern;
 
 /**
@@ -41,7 +42,12 @@ public class LootableContainerReplacer {
     public static final Map<String, Block> BLOCK_REVERSE_MAPPING = new HashMap<>();
     private static final Map<Pattern, Block> COMPILED_PATTERNS = new HashMap<>();
     
+    // Use our own loaded chunks cache as serverWorld.isChunkLoaded() has a bunch of checks we can skip
+    // This will increase memory a bit, but performance should improve
+    private static final Map<RegistryKey<World>, Set<ChunkPos>> LOADED_CHUNKS_CACHE = new HashMap<>();
+    
     public static void init() {
+        registerChunkLoadCache();
         registerTickCallback();
         registerInstancedLootDrop();
         for (BlockMapping blockMapping : ModConfig.get().blockMapping) {
@@ -58,6 +64,16 @@ public class LootableContainerReplacer {
             }
         }
     }
+    
+    private static void registerChunkLoadCache() {
+        ServerChunkEvents.CHUNK_LOAD.register((serverWorld, chunk) -> {
+            RegistryKey<World> dimension = serverWorld.getRegistryKey();
+            // Use same chunk status as serverWorld.isChunkLoaded
+            if (!ModConfig.get().disabledDimensions.contains(dimension.toString()) && chunk.getStatus().isAtLeast(ChunkStatus.FULL)) {
+                LOADED_CHUNKS_CACHE.computeIfAbsent(dimension, m -> new HashSet<>()).add(chunk.getPos());
+            }
+        });
+    }
 
     private static void registerTickCallback() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
@@ -70,6 +86,12 @@ public class LootableContainerReplacer {
                     continue;
                 }
                 
+                if (!LOADED_CHUNKS_CACHE.containsKey(replacementInfo.worldRegistryKey) || !LOADED_CHUNKS_CACHE.get(replacementInfo.worldRegistryKey).containsAll(replacementInfo.chunkPos)) {
+                    // Add back to the queue to retry later when chunk gets loaded
+                    REPLACEMENT_INFOS.add(replacementInfo);
+                    continue;
+                }
+                
                 ServerWorld serverWorld = server.getWorld(replacementInfo.worldRegistryKey);
                 
                 if (serverWorld == null) {
@@ -79,13 +101,14 @@ public class LootableContainerReplacer {
                 BlockPos pos = replacementInfo.pos;
                 BlockEntity oldBlockEntity = serverWorld.getBlockEntity(pos);
 
-                if (oldBlockEntity instanceof MyLootContainer) {
+                // Sanity checks, should have been caught earlier
+                if (!(oldBlockEntity instanceof LootableContainerBlockEntity lootable) || oldBlockEntity instanceof MyLootContainer || ((LootableContainerBlockEntityAccessor) lootable).getLootTableId() == null) {
                     continue;
                 }
 
                 BlockState oldBlockState = serverWorld.getBlockState(pos);
                 
-                if (replacementInfo.lootTableId != null && MyLootUtil.supportedEntity(oldBlockEntity) && serverWorld.getChunk(pos) != null) {
+                if (replacementInfo.lootTableId != null && MyLootUtil.supportedEntity(oldBlockEntity)) {
                     String blockName = MyLootUtil.getBlockName(oldBlockState.getBlock());
                     Block replacementBlock = getReplacementBlockIfSupported(blockName);
                     
@@ -144,11 +167,34 @@ public class LootableContainerReplacer {
         return null;
     }
     
-    @AllArgsConstructor
     public static class ReplacementInfo {
         RegistryKey<World> worldRegistryKey;
         BlockPos pos;
+        Set<ChunkPos> chunkPos;
         Identifier lootTableId;
         long lootTableSeed;
+
+        public ReplacementInfo(RegistryKey<World> worldRegistryKey, BlockPos pos, Identifier lootTableId, long lootTableSeed) {
+            this.worldRegistryKey = worldRegistryKey;
+            this.pos = pos;
+            this.lootTableId = lootTableId;
+            this.lootTableSeed = lootTableSeed;
+            this.chunkPos = new HashSet<>();
+            
+            ChunkPos center = new ChunkPos(this.pos);
+            this.chunkPos.add(center);
+
+            // We mark the current chunk this block to be replaced is at, along with its neighbors because during
+            // the replacement logic, the setBlockState() triggers updateNeighbors() which may require neighboring
+            // chunks to be updated.  We have a check in the replacer for whether chunks are loaded before trying to
+            // replace with myLoot containers, so we also make sure the neighboring chunks are loaded as well, else
+            // setBlockState() will wait for those neighboring chunks to load on the server thread, causing lower 
+            // server TPS as replacement logic is done on the main server thread
+            for (int x = -1; x <= 1; x++) {
+                for (int z = -1; z <= 1; z++) {
+                    chunkPos.add(new ChunkPos(center.x + x, center.z + z));
+                }
+            }
+        }
     }
 }
