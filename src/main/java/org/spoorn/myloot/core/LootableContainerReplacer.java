@@ -81,6 +81,10 @@ public class LootableContainerReplacer {
             for (int i = 0; i < size; i++) {
                 ReplacementInfo replacementInfo = REPLACEMENT_INFOS.remove();
                 
+                if (replacementInfo.lootTableId == null) {
+                    continue;
+                }
+                
                 if (ModConfig.get().disabledDimensions.contains(replacementInfo.worldRegistryKey.getValue().toString())
                     || ModConfig.get().disabledLootTables.contains(replacementInfo.lootTableId.toString())) {
                     continue;
@@ -102,13 +106,13 @@ public class LootableContainerReplacer {
                 BlockEntity oldBlockEntity = serverWorld.getBlockEntity(pos);
 
                 // Sanity checks, should have been caught earlier
-                if (!(oldBlockEntity instanceof LootableContainerBlockEntity lootable) || oldBlockEntity instanceof MyLootContainer || ((LootableContainerBlockEntityAccessor) lootable).getLootTableId() == null) {
+                if (!(oldBlockEntity instanceof LootableContainerBlockEntity) || oldBlockEntity instanceof MyLootContainer) {
                     continue;
                 }
 
                 BlockState oldBlockState = serverWorld.getBlockState(pos);
                 
-                if (replacementInfo.lootTableId != null && MyLootUtil.supportedEntity(oldBlockEntity)) {
+                if (MyLootUtil.supportedEntity(oldBlockEntity)) {
                     String blockName = MyLootUtil.getBlockName(oldBlockState.getBlock());
                     Block replacementBlock = getReplacementBlockIfSupported(blockName);
                     
