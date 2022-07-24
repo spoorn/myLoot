@@ -114,7 +114,10 @@ public final class MyLootUtil {
         }
         return item.get();
     }
-    
+
+    /**
+     * Merges {@link net.minecraft.block.entity.LootableContainerBlockEntity} and {@link net.minecraft.entity.vehicle.VehicleInventory}.
+     */
     public static boolean generateRandomLoot(MyLootContainer myLootContainer, Inventory inventory, PlayerEntity player) {
         Identifier originalLootTableId = myLootContainer.getOriginalLootTableIdentifier();
         World world = myLootContainer.getMyLootWorld();
