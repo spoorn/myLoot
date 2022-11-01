@@ -1,0 +1,17 @@
+{
+    "myloot.breakcontainer.actionbarwarning" : "Segure Agachar para quebrar",
+    "myloot.breakcontainer.chatwarning" : "Quebrar isso significa que outros jogadores não poderão saqueá-lo. Se você ainda quiser quebrá-lo, segure Sneak enquanto quebra",
+    "myloot.breakcontainer.disabledactionbarwarning" : "Não pode quebrar!",
+    "myloot.breakcontainer.disabledwarning" : "A quebra de contêineres myLoot está desabilitada na configuração!",
+    "myloot.loot_chest.container.name" : "myLoot Baú",
+    "myloot.container.doubleChest" : "myLoot Baú Grande",
+    "myloot.loot_shulker_box.container.name" : "myLoot Shulker Box",
+    "myloot.loot_barrel.container.name" : "myLoot Barril",
+    "block.myloot.loot_barrel": "myLoot Barril",
+    "block.myloot.loot_chest": "myLoot Baú",
+    "block.myloot.loot_shulker_box": "myLoot Shulker Box",
+    "item.myloot.loot_chest_minecart": "Carrinho de mina com baú myLoot",
+    "myloot.loot_chest_minecart.container.name": "Carrinho de mina com baú myLoot",
+    "entity.myloot.loot_chest_minecart": "Carrinho de mina com baú myLoot",
+    "itemGroup.myloot.general" : "myLoot"
+  }
