@@ -6,12 +6,11 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.property.Properties;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
@@ -23,7 +22,6 @@ import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.config.BlockMapping;
 import org.spoorn.myloot.config.ModConfig;
-import org.spoorn.myloot.mixin.LootableContainerBlockEntityAccessor;
 import org.spoorn.myloot.util.MyLootUtil;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -125,12 +123,21 @@ public class LootableContainerReplacer {
                     // so putting this on a separate thread would be extremely slow as it just queues updates for the main thread and waits.
                     serverWorld.removeBlockEntity(pos);
 
+                    BlockState newBlockState;
                     if (replacementBlock == MyLootBlocks.MY_LOOT_CHEST_BLOCK) {
                         // Chest blocks have a different property
-                        serverWorld.setBlockState(pos, MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState().with(ChestBlock.FACING, oldBlockState.get(ChestBlock.FACING)), Block.NOTIFY_LISTENERS);
+                        newBlockState = MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState();
                     } else {
-                        serverWorld.setBlockState(pos, replacementBlock.getDefaultState().with(Properties.FACING, oldBlockState.get(Properties.FACING)), Block.NOTIFY_LISTENERS);
+                        newBlockState = replacementBlock.getDefaultState();
                     }
+                    
+                    // Unchecked to workaround generics and wildcards
+                    // Copy blockState properties of original block to replacement
+                    for (Property property : replacementInfo.originalBlockState.getProperties()) {
+                        newBlockState = newBlockState.with(property, replacementInfo.originalBlockState.get(property));
+                    }
+                    serverWorld.setBlockState(pos, newBlockState, Block.NOTIFY_ALL);
+
 
                     BlockEntity newBlockEntity = serverWorld.getBlockEntity(pos);
                     if (newBlockEntity instanceof MyLootContainer myLootContainer) {
@@ -177,8 +184,13 @@ public class LootableContainerReplacer {
         Set<ChunkPos> chunkPos;
         Identifier lootTableId;
         long lootTableSeed;
+        // When we replace blocks, since we update neighbor states on each block replacement, it can change the
+        // neighboring block states which can result in different behavior after replacement.  For example, when we
+        // replace one side of a double chest, it will reset the other double chest to a single chest because the
+        // block types are different.  We want to preserve properties here
+        BlockState originalBlockState;
 
-        public ReplacementInfo(RegistryKey<World> worldRegistryKey, BlockPos pos, Identifier lootTableId, long lootTableSeed) {
+        public ReplacementInfo(RegistryKey<World> worldRegistryKey, BlockPos pos, Identifier lootTableId, long lootTableSeed, BlockState blockState) {
             this.worldRegistryKey = worldRegistryKey;
             this.pos = pos;
             this.lootTableId = lootTableId;
@@ -199,6 +211,8 @@ public class LootableContainerReplacer {
                     chunkPos.add(new ChunkPos(center.x + x, center.z + z));
                 }
             }
+            
+            this.originalBlockState = blockState;
         }
     }
 }
