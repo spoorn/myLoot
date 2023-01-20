@@ -1,0 +1,17 @@
+{
+  "myloot.breakcontainer.actionbarwarning" : "Maintenez Sneak pour casser",
+  "myloot.breakcontainer.chatwarning" : "Briser cela signifie que les autres joueurs ne pourront pas le piller.  Si vous voulez toujours le casser, maintenez Sneak tout en cassant",
+  "myloot.breakcontainer.disabledactionbarwarning" : "Impossible de casser !",
+  "myloot.breakcontainer.disabledwarning" : "Casser des conteneurs myLoot est désactivée dans la configuration !",
+  "myloot.loot_chest.container.name" : "Coffre myLoot",
+  "myloot.container.doubleChest" : "Coffre Large myLoot",
+  "myloot.loot_shulker_box.container.name" : "Boîte de Shulker myLoot",
+  "myloot.loot_barrel.container.name" : "Barril myLoot",
+  "block.myloot.loot_barrel": "Barril myLoot",
+  "block.myloot.loot_chest": "Coffre myLoot",
+  "block.myloot.loot_shulker_box": "Boîte de Shulker myLoot",
+  "item.myloot.loot_chest_minecart": "Wagonnet avec Coffre myLoot",
+  "myloot.loot_chest_minecart.container.name": "Wagonnet avec Coffre myLoot",
+  "entity.myloot.loot_chest_minecart": "Wagonnet avec Coffre myLoot",
+  "itemGroup.myloot.general" : "myLoot"
+}
