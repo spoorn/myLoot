@@ -9,6 +9,7 @@
   "myloot.loot_barrel.container.name" : "myLoot Barrel",
   "block.myloot.loot_barrel": "myLoot Barrel",
   "block.myloot.loot_chest": "myLoot Chest",
+  "block.myloot.opened_loot_chest": "myLoot Chest",
   "block.myloot.loot_shulker_box": "myLoot Shulker Box",
   "item.myloot.loot_chest_minecart": "Minecart with myLoot Chest",
   "myloot.loot_chest_minecart.container.name": "Minecart with myLoot Chest",

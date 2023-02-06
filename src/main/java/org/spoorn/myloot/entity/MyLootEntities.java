@@ -4,8 +4,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.spoorn.myloot.MyLoot;
 import org.spoorn.myloot.block.entity.MyLootBarrelBlockEntity;
 import org.spoorn.myloot.block.entity.MyLootChestBlockEntity;
@@ -27,10 +27,10 @@ public class MyLootEntities {
     }
     
     private static <T extends Entity> EntityType<T> getEntityType(String id, Class<T> clazz) {
-        return (EntityType<T>) Registry.ENTITY_TYPE.get(new Identifier(MyLoot.MODID, id));
+        return (EntityType<T>) Registries.ENTITY_TYPE.get(new Identifier(MyLoot.MODID, id));
     }
     
     private static <T extends BlockEntity> BlockEntityType<T> getBlockEntityType(String id, Class<T> clazz) {
-        return (BlockEntityType<T>) Registry.BLOCK_ENTITY_TYPE.get(new Identifier(MyLoot.MODID, id));
+        return (BlockEntityType<T>) Registries.BLOCK_ENTITY_TYPE.get(new Identifier(MyLoot.MODID, id));
     }
 }

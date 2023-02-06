@@ -19,6 +19,7 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -26,7 +27,6 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.spoorn.myloot.MyLoot;
 import org.spoorn.myloot.block.MyLootBlocks;
@@ -61,7 +61,7 @@ public final class MyLootUtil {
     }
     
     public static String getBlockName(Block block) {
-        return Registry.BLOCK.getId(block).toString();
+        return Registries.BLOCK.getId(block).toString();
     }
     
     public static Block getMyLootBlockFromName(String name) {

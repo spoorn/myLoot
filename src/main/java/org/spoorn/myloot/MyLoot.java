@@ -3,7 +3,7 @@ package org.spoorn.myloot;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemGroup;
@@ -37,13 +37,8 @@ import org.spoorn.spoornpacks.type.VehicleType;
 public class MyLoot implements ModInitializer {
     
     public static final String MODID = "myloot";
-    private static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.create(new Identifier(MyLoot.MODID, "general"))
+    private static final ItemGroup ITEM_GROUP = FabricItemGroup.builder(new Identifier(MyLoot.MODID, "general"))
             .icon(ResourceFactory.fetchItemGroupSupplierFromBlock(MyLoot.MODID, "loot_chest"))
-            .appendItems((itemStacks) -> {
-                itemStacks.add(new ItemStack(MyLootItems.MY_LOOT_CHEST));
-                itemStacks.add(new ItemStack(MyLootItems.MY_LOOT_CHEST_MINECART));
-                itemStacks.add(new ItemStack(MyLootItems.MY_LOOT_SHULKER_BOX));
-            })
             .build();
     
     public static final ResourceGenerator RESOURCE_GENERATOR = SpoornPacksRegistry.registerResource(MODID);

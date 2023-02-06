@@ -1,7 +1,6 @@
 package org.spoorn.myloot.client.block;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -29,7 +28,6 @@ import org.spoorn.myloot.block.entity.MyLootBarrelBlockEntity;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -57,25 +55,21 @@ public class BarrelDynamicModel implements UnbakedModel {
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
-        Collection<SpriteIdentifier> unopenedIds = this.unopened.getTextureDependencies(unbakedModelGetter, unresolvedTextureReferences);
-        Collection<SpriteIdentifier> openedIds = this.opened.getTextureDependencies(unbakedModelGetter, unresolvedTextureReferences);
-        return new HashSet<>() {{
-            addAll(unopenedIds);
-            addAll(openedIds);
-        }};
+    public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
+        this.unopened.setParents(modelLoader);
+        this.opened.setParents(modelLoader);
     }
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+    public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
         return new BarrelBakedModel(
-                bakedModel(this.unopened, loader, textureGetter, rotationContainer, modelId),
-                bakedModel(this.opened, loader, textureGetter, rotationContainer, modelId));
+                bakedModel(this.unopened, baker, textureGetter, rotationContainer, modelId),
+                bakedModel(this.opened, baker, textureGetter, rotationContainer, modelId));
     }
     
-    private BakedModel bakedModel(UnbakedModel unbakedModel, ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
-        return unbakedModel.bake(loader, textureGetter, rotationContainer, modelId);
+    private BakedModel bakedModel(UnbakedModel unbakedModel, Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+        return unbakedModel.bake(baker, textureGetter, rotationContainer, modelId);
     }
     
     private static final class BarrelBakedModel implements BakedModel, FabricBakedModel {
