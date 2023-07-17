@@ -1,6 +1,6 @@
 {
   "myloot.breakcontainer.actionbarwarning" : "Крадіться, щоб зруйнувати",
-  "myloot.breakcontainer.chatwarning" : "Зруйнувавши це означатиме, що інші гравці не зможуть отримати здобич. Якщо ви все ще хочете зруйнувати, руйнуйте крадучись",
+  "myloot.breakcontainer.chatwarning" : "Руйнування цього означатиме, що інші гравці не зможуть отримати здобич. Якщо ви все ще хочете зруйнувати, руйнуйте крадучись",
   "myloot.breakcontainer.disabledactionbarwarning" : "Неможливо зламати!",
   "myloot.breakcontainer.disabledwarning" : "Руйнування контейнерів myLoot вимкнено в конфігурації!",
   "myloot.loot_chest.container.name" : "Скриня myLoot",
