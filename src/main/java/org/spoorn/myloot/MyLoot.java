@@ -7,7 +7,11 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.spoorn.myloot.block.MyLootBarrelBlock;
@@ -37,9 +41,13 @@ import org.spoorn.spoornpacks.type.VehicleType;
 public class MyLoot implements ModInitializer {
     
     public static final String MODID = "myloot";
-    private static final ItemGroup ITEM_GROUP = FabricItemGroup.builder(new Identifier(MyLoot.MODID, "general"))
-            .icon(ResourceFactory.fetchItemGroupSupplierFromBlock(MyLoot.MODID, "loot_chest"))
-            .build();
+
+    private static final RegistryKey<ItemGroup> ITEM_GROUP_REGISTRY_KEY = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(MODID, "general"));
+    private static final ItemGroup ITEM_GROUP = Registry.register(Registries.ITEM_GROUP, ITEM_GROUP_REGISTRY_KEY, FabricItemGroup.builder()
+            .displayName(Text.translatable("itemGroup.myloot.general"))
+            .icon(ResourceFactory.fetchItemGroupSupplierFromBlock(MODID, "loot_chest"))
+            .build()
+    );
     
     public static final ResourceGenerator RESOURCE_GENERATOR = SpoornPacksRegistry.registerResource(MODID);
     

@@ -26,9 +26,9 @@ public abstract class ChunkRegionMixin {
             StorageMinecartEntityAccessor accessor = (StorageMinecartEntityAccessor) entity;
             Identifier lootTableId = accessor.getLootTableId();
             if (lootTableId != null
-                && !ModConfig.get().disabledDimensions.contains(entity.world.getRegistryKey().getValue().toString())
+                && !ModConfig.get().disabledDimensions.contains(entity.getWorld().getRegistryKey().getValue().toString())
                 && !ModConfig.get().disabledLootTables.contains(lootTableId.toString())) {
-                MyLootChestMinecartEntity myLootChestMinecartEntity = new MyLootChestMinecartEntity(entity.world, entity.getX(), entity.getY(), entity.getZ());
+                MyLootChestMinecartEntity myLootChestMinecartEntity = new MyLootChestMinecartEntity(entity.getWorld(), entity.getX(), entity.getY(), entity.getZ());
                 myLootChestMinecartEntity.setLootTable(lootTableId, accessor.getLootTableSeed());
                 this.spawnEntity(myLootChestMinecartEntity);
                 cir.cancel();

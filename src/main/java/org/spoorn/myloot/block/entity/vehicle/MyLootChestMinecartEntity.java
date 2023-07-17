@@ -12,7 +12,9 @@ import net.minecraft.entity.vehicle.ChestMinecartEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -21,15 +23,16 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.block.entity.common.MyLootContainerBlockEntityCommon;
 import org.spoorn.myloot.entity.MyLootEntities;
 import org.spoorn.myloot.item.MyLootItems;
+import org.spoorn.myloot.mixin.DataTrackerAccessor;
 import org.spoorn.myloot.mixin.EntityAccessor;
 import org.spoorn.myloot.mixin.StorageMinecartEntityAccessor;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +44,19 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
     
     public MyLootChestMinecartEntity(EntityType<? extends ChestMinecartEntity> entityType, World world) {
         super(entityType, world);
+        // Manually mark data tracker as dirty to force sync between client/server when entity is initialized
+        if (world.isClient) {
+            this.markDataTrackerDirty();
+        }
         ((EntityAccessor) this).setType(MyLootEntities.MY_LOOT_CHEST_MINECART_ENTITY_TYPE);
     }
     
     public MyLootChestMinecartEntity(World world, double x, double y, double z) {
         super(world, x, y, z);
+        // Manually mark data tracker as dirty to force sync between client/server when entity is initialized
+        if (world.isClient) {
+            this.markDataTrackerDirty();
+        }
         ((EntityAccessor) this).setType(MyLootEntities.MY_LOOT_CHEST_MINECART_ENTITY_TYPE);
     }
 
@@ -101,7 +112,7 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
 
     @Override
     public BlockState getDefaultContainedBlock() {
-        if (this.world.isClient) {
+        if (this.getWorld().isClient) {
             checkAndLoadPlayersOpenedTrackedData();
             // Some class loading indirection
             if (this.common.hasPlayerOpenedOnClient()) {
@@ -113,7 +124,11 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
 
     @Override
     public ActionResult interact(PlayerEntity player, Hand hand) {
-        if (!player.world.isClient && this.common.addPlayerOpenedIfAbsent(player)) {
+        // Manually mark data tracker as dirty to force sync between client/server when client player interacts
+        if (player.getWorld().isClient) {
+            this.markDataTrackerDirty();
+        }
+        if (!player.getWorld().isClient && this.common.addPlayerOpenedIfAbsent(player)) {
             this.updatePlayersOpenedTrackedData();
         }
         return super.interact(player, hand);
@@ -220,5 +235,12 @@ public class MyLootChestMinecartEntity extends ChestMinecartEntity implements My
     @Override
     public Vec3d getEntityPos() {
         return super.getPos();
+    }
+    
+    // DataTracker only seems to update on client for MinecartEntities when damaging or inventory changes.
+    // Allow manually marking it as dirty, so we can set the opened vs unopened flags for rendering myLoot chest
+    // even if no "change" to the entity has been done since load.
+    private void markDataTrackerDirty() {
+        ((DataTrackerAccessor)this.dataTracker).setDirty(true);
     }
 }

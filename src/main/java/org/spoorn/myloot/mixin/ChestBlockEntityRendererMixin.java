@@ -21,7 +21,7 @@ public class ChestBlockEntityRendererMixin {
      * Replace myLoot container texture with the opened variant if player has opened the container.
      */
     @Redirect(method = "render(Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II)V",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TexturedRenderLayers;getChestTexture(Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/block/enums/ChestType;Z)Lnet/minecraft/client/util/SpriteIdentifier;"))
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TexturedRenderLayers;getChestTextureId(Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/block/enums/ChestType;Z)Lnet/minecraft/client/util/SpriteIdentifier;"))
     private SpriteIdentifier overrideTextureWithOpened(BlockEntity blockEntity, ChestType type, boolean christmas) {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null && blockEntity instanceof MyLootContainer myLootContainer) {
@@ -29,6 +29,6 @@ public class ChestBlockEntityRendererMixin {
                 return SPTexturedRenderLayers.getChest(MyLoot.MODID, "opened_loot", type);
             }
         }
-        return TexturedRenderLayers.getChestTexture(blockEntity, type, christmas);
+        return TexturedRenderLayers.getChestTextureId(blockEntity, type, christmas);
     }
 }

@@ -23,8 +23,8 @@ import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.config.BlockMapping;
 import org.spoorn.myloot.config.ModConfig;
 import org.spoorn.myloot.util.MyLootUtil;
+import oshi.annotation.concurrent.NotThreadSafe;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
@@ -206,8 +206,9 @@ public class LootableContainerReplacer {
             // replace with myLoot containers, so we also make sure the neighboring chunks are loaded as well, else
             // setBlockState() will wait for those neighboring chunks to load on the server thread, causing lower 
             // server TPS as replacement logic is done on the main server thread
-            for (int x = -1; x <= 1; x++) {
-                for (int z = -1; z <= 1; z++) {
+            // Set this to 2 radius instead of 1, might help with https://github.com/spoorn/myLoot/issues/26
+            for (int x = -2; x <= 2; x++) {
+                for (int z = -2; z <= 2; z++) {
                     chunkPos.add(new ChunkPos(center.x + x, center.z + z));
                 }
             }

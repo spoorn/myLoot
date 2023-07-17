@@ -4,6 +4,7 @@
   "myloot.breakcontainer.disabledactionbarwarning" : "Cannot break!",
   "myloot.breakcontainer.disabledwarning" : "Breaking myLoot containers is disabled in the config!",
   "myloot.loot_chest.container.name" : "myLoot Chest",
+  "container.myloot.opened_loot_chest" : "myLoot Unopened Creative Chest",
   "myloot.container.doubleChest" : "myLoot Large Chest",
   "myloot.loot_shulker_box.container.name" : "myLoot Shulker Box",
   "myloot.loot_barrel.container.name" : "myLoot Barrel",

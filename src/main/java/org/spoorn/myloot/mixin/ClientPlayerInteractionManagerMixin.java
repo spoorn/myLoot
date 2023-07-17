@@ -60,7 +60,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
         }
     }
     
-    @Inject(method = "attackEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V"), cancellable = true)
+    @Inject(method = "attackEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V"), cancellable = true)
     private void preventBreakingMyLootEntities(PlayerEntity player, Entity target, CallbackInfo ci) {
         if (!player.isCreative() && target instanceof MyLootContainer) {
             if (shouldCancelBreaking()) {

@@ -15,7 +15,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.nbt.NbtCompound;
@@ -28,6 +28,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spoorn.myloot.MyLoot;
 import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.block.entity.MyLootContainer;
@@ -38,7 +39,6 @@ import org.spoorn.spoornpacks.type.BlockType;
 import org.spoorn.spoornpacks.type.ItemType;
 import org.spoorn.spoornpacks.type.VehicleType;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -122,24 +122,24 @@ public final class MyLootUtil {
         Identifier originalLootTableId = myLootContainer.getOriginalLootTableIdentifier();
         World world = myLootContainer.getMyLootWorld();
         if (originalLootTableId != null && world != null && world.getServer() != null) {
-            LootTable lootTable = world.getServer().getLootManager().getTable(originalLootTableId);
+            LootTable lootTable = world.getServer().getLootManager().getLootTable(originalLootTableId);
             if (player instanceof ServerPlayerEntity) {
                 Criteria.PLAYER_GENERATES_CONTAINER_LOOT.trigger((ServerPlayerEntity)player, originalLootTableId);
             }
 
-            LootContext.Builder builder;
+            LootContextParameterSet.Builder builder;
             if (myLootContainer instanceof MyLootChestMinecartEntity && myLootContainer.getEntityPos() != null) {
-                builder = new LootContext.Builder((ServerWorld)world).parameter(LootContextParameters.ORIGIN, myLootContainer.getEntityPos()).random(RANDOM.nextLong());
+                builder = new LootContextParameterSet.Builder((ServerWorld)world).add(LootContextParameters.ORIGIN, myLootContainer.getEntityPos());
             } else if (myLootContainer.getBlockPos() != null) {
-                builder = new LootContext.Builder((ServerWorld)world).parameter(LootContextParameters.ORIGIN, Vec3d.ofCenter(myLootContainer.getBlockPos())).random(RANDOM.nextLong());
+                builder = new LootContextParameterSet.Builder((ServerWorld)world).add(LootContextParameters.ORIGIN, Vec3d.ofCenter(myLootContainer.getBlockPos()));
             } else {
                 throw new RuntimeException("Could not generate random loot for myLootContainer=" + myLootContainer + " for player=" + player);
             }
            
             if (player != null) {
-                builder.luck(player.getLuck()).parameter(LootContextParameters.THIS_ENTITY, player);
+                builder.luck(player.getLuck()).add(LootContextParameters.THIS_ENTITY, player);
             }
-            lootTable.supplyInventory(inventory, builder.build(LootContextTypes.CHEST));
+            lootTable.supplyInventory(inventory, builder.build(LootContextTypes.CHEST), RANDOM.nextLong());
             return true;
         }
         return false;
