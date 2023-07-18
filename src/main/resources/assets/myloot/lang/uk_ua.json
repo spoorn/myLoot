@@ -1,0 +1,19 @@
+{
+  "myloot.breakcontainer.actionbarwarning" : "Крадіться, щоб зруйнувати",
+  "myloot.breakcontainer.chatwarning" : "Руйнування цього означатиме, що інші гравці не зможуть отримати здобич. Якщо ви все ще хочете зруйнувати, руйнуйте крадучись",
+  "myloot.breakcontainer.disabledactionbarwarning" : "Неможливо зламати!",
+  "myloot.breakcontainer.disabledwarning" : "Руйнування контейнерів myLoot вимкнено в конфігурації!",
+  "myloot.loot_chest.container.name" : "Скриня myLoot",
+  "container.myloot.opened_loot_chest" : "Невідчинена творча скриня myLoot ",
+  "myloot.container.doubleChest" : "Велика скриня myLoot",
+  "myloot.loot_shulker_box.container.name" : "Шалкерова коробка myLoot",
+  "myloot.loot_barrel.container.name" : "Діжка myLoot",
+  "block.myloot.loot_barrel": "Діжка myLoot",
+  "block.myloot.loot_chest": "Скриня myLoot",
+  "block.myloot.opened_loot_chest": "Скриня myLoot",
+  "block.myloot.loot_shulker_box": "Шалкерова скриняmyLoot",
+  "item.myloot.loot_chest_minecart": "Вагонетка зі скринею myLoot",
+  "myloot.loot_chest_minecart.container.name": "Вагонетка зі скринею myLoot",
+  "entity.myloot.loot_chest_minecart": "Вагонетка зі скринею myLoot",
+  "itemGroup.myloot.general" : "myLoot"
+}
