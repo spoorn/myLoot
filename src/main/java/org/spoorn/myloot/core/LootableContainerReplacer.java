@@ -18,7 +18,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
-import org.spoorn.myloot.block.MyLootBlocks;
 import org.spoorn.myloot.block.entity.MyLootContainer;
 import org.spoorn.myloot.config.BlockMapping;
 import org.spoorn.myloot.config.ModConfig;
@@ -123,21 +122,13 @@ public class LootableContainerReplacer {
                     // so putting this on a separate thread would be extremely slow as it just queues updates for the main thread and waits.
                     serverWorld.removeBlockEntity(pos);
 
-                    BlockState newBlockState;
-                    if (replacementBlock == MyLootBlocks.MY_LOOT_CHEST_BLOCK) {
-                        // Chest blocks have a different property
-                        newBlockState = MyLootBlocks.MY_LOOT_CHEST_BLOCK.getDefaultState();
-                    } else {
-                        newBlockState = replacementBlock.getDefaultState();
-                    }
-                    
+                    BlockState newBlockState = replacementBlock.getDefaultState();
                     // Unchecked to workaround generics and wildcards
                     // Copy blockState properties of original block to replacement
                     for (Property property : replacementInfo.originalBlockState.getProperties()) {
-                        newBlockState = newBlockState.with(property, replacementInfo.originalBlockState.get(property));
+                        newBlockState = newBlockState.withIfExists(property, replacementInfo.originalBlockState.get(property));
                     }
                     serverWorld.setBlockState(pos, newBlockState, Block.NOTIFY_ALL);
-
 
                     BlockEntity newBlockEntity = serverWorld.getBlockEntity(pos);
                     if (newBlockEntity instanceof MyLootContainer myLootContainer) {
