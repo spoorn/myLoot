@@ -70,6 +70,14 @@ public class LootableContainerReplacer {
                 LOADED_CHUNKS_CACHE.computeIfAbsent(dimension, m -> new HashSet<>()).add(chunk.getPos());
             }
         });
+        
+        ServerChunkEvents.CHUNK_UNLOAD.register((serverWorld, chunk) -> {
+            RegistryKey<World> dimension = serverWorld.getRegistryKey();
+            // Use same chunk status as serverWorld.isChunkLoaded
+            if (LOADED_CHUNKS_CACHE.containsKey(dimension)) {
+                LOADED_CHUNKS_CACHE.get(dimension).remove(chunk.getPos());
+            }
+        });
     }
 
     private static void registerTickCallback() {
